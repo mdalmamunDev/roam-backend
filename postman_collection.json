@@ -1,0 +1,5858 @@
+{
+	"info": {
+		"_postman_id": "bf8dd2f3-2af9-40b6-8e5a-7e6d0d453e88",
+		"name": "Roam",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43273326",
+		"_collection_link": "https://auto-revive-backend.postman.co/workspace/Auto-Revive-Backend-Workspace~1c72bb29-f351-48ac-8a47-e53f038c460d/collection/43273326-bf8dd2f3-2af9-40b6-8e5a-7e6d0d453e88?action=share&source=collection_link&creator=43273326"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    // \"email\": \"admin@gmail.com\",\r\n    \"email\": \"customer.test2@gmail.com\",\r\n    // \"email\": \"tow_truck@gmail.com\",\r\n    // \"email\": \"mechanic@gmail.com\",\r\n    // \"email\": \"cimod36280@bocapies.com\",\r\n    // \"password\": \"1qazxsw2\"\r\n    \"password\": \"12345678\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "forgot-password",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"tow_truck3@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/forgot-password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"forgot-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reset password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODBiMTU1MjlhZjc4NGFkYWE3ZjNmMmUiLCJlbWFpbCI6InRvd190cnVjazNAZ21haWwuY29tIiwicm9sZSI6InRvd190cnVjayIsInR5cGUiOiJyZXNldF9wYXNzd29yZCIsImlhdCI6MTc0NTU1NzAyOCwiZXhwIjoxNzQ1NTU3MzI4fQ.CAIjysowVBsmC0_T7yaMS_blpAcBT-pWfD-iCCXh_fI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\": \"12345678\",\r\n    \"confirmPassword\": \"12345678\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/reset-password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currentPassword\": \"2wsxzaq1\",\r\n    \"password\": \"12345678\",\r\n    \"confirmPassword\": \"12345678\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/change-password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"change-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verify email",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODFmNjlkYjIzMjEzNDNmNGJkODFhNjciLCJlbWFpbCI6IjdxNWh1cjJ2eHFAaWxsdWJkLmNvbSIsInJvbGUiOiJ0b3dfdHJ1Y2siLCJ0eXBlIjoidmVyaWZ5X2VtYWlsIiwiaWF0IjoxNzQ2ODg5MTc5LCJleHAiOjE3NDY4ODk3Nzl9.U5mk0tWs4UPcZAcE3Y30d2B2DvLDrRF9jd1hJgjbovk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"otp\": \"864489\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/verify-email",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"verify-email"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resend OTP",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODAyMzIxM2U4NjYwNDAyMjhlZWJhOGYiLCJlbWFpbCI6ImN1c3RvbWVyQGdtYWlsLmNvbSIsInJvbGUiOiJjdXN0b21lciIsInR5cGUiOiJyZXNldF9wYXNzd29yZCIsImlhdCI6MTc0NTU1MTY4OSwiZXhwIjoxNzQ1NTUxOTg5fQ.qgOTOj9Qz5zFu4zG0WOvuuqhY4-Gexh0uCfgK5jMc7o",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/resend-otp",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"resend-otp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add admin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODEwYmI4NGZlMDQ5ODRkMjI2Yzk1YTkiLCJlbWFpbCI6ImN1c3RvbWVyMEBnbWFpbC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJ0eXBlIjoidmVyaWZ5X2VtYWlsIiwiaWF0IjoxNzQ1OTI3MDQ0LCJleHAiOjE3NDU5Mjc2NDR9.NsHIRWTJmRB_xmo6ZU5teqLO6rOSTpQrtpfD5sXH6_c",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Mr. Admin\",\r\n    \"email\": \"admin@gmail.com\",\r\n    \"phone\": \"1234567890\",\r\n    \"role\": \"admin\",\r\n    \"password\": \"12345678\",\r\n    \"confirmPassword\": \"12345678\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add customer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Mr. Customer",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "6rmuk1vxcb@vafyxh.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "12345678",
+									"type": "text"
+								},
+								{
+									"key": "confirmPassword",
+									"value": "12345678",
+									"type": "text"
+								},
+								{
+									"key": "role",
+									"value": "customer",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "postman-cloud:///1f01d9b2-a6e6-4660-a447-77df3df17cd5"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Experience",
+			"item": [
+				{
+					"name": "get all",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/experience",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"experience"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all for admin",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/experience/admin?page=1&limit=10&sortField=createdAt&sortOrder=desc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"experience",
+								"admin"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "sortField",
+									"value": "createdAt"
+								},
+								{
+									"key": "sortOrder",
+									"value": "desc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add experience",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Gasoline Engine Repair\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/experience",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"experience"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update experience",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Gasoline\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/experience/68046e066803f6a0972da0da",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"experience",
+								"68046e066803f6a0972da0da"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete experience",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/experience/68046e066803f6a0972da0da",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"experience",
+								"68046e066803f6a0972da0da"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tool",
+			"item": [
+				{
+					"name": "get all tools",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/tool",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tool"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all tools for admin",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/tool/admin?page=1&limit=10&sortField=createdAt&sortOrder=desc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tool",
+								"admin"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "sortField",
+									"value": "createdAt"
+								},
+								{
+									"key": "sortOrder",
+									"value": "desc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add new tools",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Ratchets (Standard & Flex Head)\",\r\n    \"group\": \"Basic hand\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/tool",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tool"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update new tools",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Ratchets\",\r\n    \"group\": \"Basic hand\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/tool/68046cf253d62b44f392c247",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tool",
+								"68046cf253d62b44f392c247"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete new tools",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/tool/68046cf253d62b44f392c247",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"tool",
+								"68046cf253d62b44f392c247"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Car Model",
+			"item": [
+				{
+					"name": "get all car models",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Gasoline Engine Repair\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/car-model",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"car-model"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all car models for admin",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/car-model/admin?page=1&limit=10&sortField=createdAt&sortOrder=desc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"car-model",
+								"admin"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "sortField",
+									"value": "createdAt"
+								},
+								{
+									"key": "sortOrder",
+									"value": "desc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add new car model",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Car Model F\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/car-model",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"car-model"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update car model",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Model Updated\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/car-model/6803b78411ac38217099402c",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"car-model",
+								"6803b78411ac38217099402c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete car model",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/car-model/68046c2253d62b44f392c237",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"car-model",
+								"68046c2253d62b44f392c237"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Service",
+			"item": [
+				{
+					"name": "get all services",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Gasoline Engine Repair\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/service",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"service"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all services for admin",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/service/admin?page=1&limit=10&sortField=createdAt&sortOrder=desc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"service",
+								"admin"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "sortField",
+									"value": "createdAt"
+								},
+								{
+									"key": "sortOrder",
+									"value": "desc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add service",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Service 1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/service",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"service"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update service",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Service Updated\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/service/6804dff61faa6052f3aa9999",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"service",
+								"6804dff61faa6052f3aa9999"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete service",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/service/6804dff61faa6052f3aa9999",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"service",
+								"6804dff61faa6052f3aa9999"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Job",
+			"item": [
+				{
+					"name": "get all jobs admin",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/job/admin?page=1&limit=10&sortField=createdAt&sortOrder=desc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"job",
+								"admin"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "sortField",
+									"value": "createdAt"
+								},
+								{
+									"key": "sortOrder",
+									"value": "desc"
+								},
+								{
+									"key": "status",
+									"value": "active",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all jobs customer",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{customer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/job?page=1&limit=10&sortField=createdAt&sortOrder=desc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"job"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "sortField",
+									"value": "createdAt"
+								},
+								{
+									"key": "sortOrder",
+									"value": "desc"
+								},
+								{
+									"key": "status",
+									"value": "active",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all jobs for provider",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{mechanic}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{baseUrl}}/job/provider/6?page=1&limit=10&sortField=createdAt&sortOrder=desc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"job",
+								"provider",
+								"6"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "sortField",
+									"value": "createdAt"
+								},
+								{
+									"key": "sortOrder",
+									"value": "desc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get job by id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/job/68047992c88b143eba63b8be",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"job",
+								"68047992c88b143eba63b8be"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add new job",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{customer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"platform\": \"on site\",\r\n  \"targets\": [\"680f1e0cf659b628c193c25d\"],\r\n  \"carModelId\": \"6803b78011ac382170994018\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/job/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"job",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update job",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{customer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"platform\": \"in shop\",\r\n  \"targets\": [\"6810da893979dc5400733611\", \"6810c5696a5892e66c5bdb85\", \"680f1e0cf659b628c193c25d\"],\r\n  \"carModelId\": \"6803b78011ac382170994018\",\r\n  \"status\": \"active\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/job/6819fcbeb425db12cfb59204",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"job",
+								"6819fcbeb425db12cfb59204"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete job",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/job/68047d28b5e8ebc1416aad02",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"job",
+								"68047d28b5e8ebc1416aad02"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Job Process",
+			"item": [
+				{
+					"name": "Provider",
+					"item": [
+						{
+							"name": "all pagination & filters",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{mechanic}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Gasoline Engine Repair\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/job-process/provider?page=1&limit=11&sortField=createdAt&sortOrder=desc",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"job-process",
+										"provider"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "11"
+										},
+										{
+											"key": "sortField",
+											"value": "createdAt"
+										},
+										{
+											"key": "sortOrder",
+											"value": "desc"
+										},
+										{
+											"key": "status",
+											"value": "confirmed",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "all histories",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Gasoline Engine Repair\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/job-process/provider?page=1&limit=11&sortField=createdAt&sortOrder=desc",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"job-process",
+										"provider"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "11"
+										},
+										{
+											"key": "sortField",
+											"value": "createdAt"
+										},
+										{
+											"key": "sortOrder",
+											"value": "desc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "one",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/job-process/provider/68061aa5c8135b198f3b532b",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"job-process",
+										"provider",
+										"68061aa5c8135b198f3b532b"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "request job | create job process",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{mechanic}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"jobId\": \"68208728381f0e904b09ed6e\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/job-process/provider/do-request",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"job-process",
+										"provider",
+										"do-request"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "change status",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"status\": \"confirmed\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/job-process/provider/681c9fd4f5596a134e3078a2",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"job-process",
+										"provider",
+										"681c9fd4f5596a134e3078a2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "provider add services job process",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n    {\"serviceId\": \"6804e0091faa6052f3aa999f\", \"amount\": 105},\r\n    {\"serviceId\": \"6804e0091faa6052f3aa999f\", \"amount\": 105},\r\n    {\"serviceId\": \"6804e0091faa6052f3aa999f\", \"amount\": 105},\r\n    {\"serviceId\": \"6804e0091faa6052f3aa999f\", \"amount\": 105},\r\n    {\"serviceId\": \"6804e0091faa6052f3aa999f\", \"amount\": 105},\r\n    {\"serviceId\": \"6804e0091faa6052f3aa999f\", \"amount\": 105}\r\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/job-process/provider/add-services/681c9fd4f5596a134e3078a2",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"job-process",
+										"provider",
+										"add-services",
+										"681c9fd4f5596a134e3078a2"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "{{mechanic}}",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Customer",
+					"item": [
+						{
+							"name": "all pagination & filters",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": []
+								},
+								"url": {
+									"raw": "{{baseUrl}}/job-process/customer?page=1&limit=11&sortField=createdAt&sortOrder=desc",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"job-process",
+										"customer"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "11"
+										},
+										{
+											"key": "sortField",
+											"value": "createdAt"
+										},
+										{
+											"key": "sortOrder",
+											"value": "desc"
+										},
+										{
+											"key": "status",
+											"value": "requested",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "all histories",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Gasoline Engine Repair\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/job-process/customer?page=1&limit=11&sortField=createdAt&sortOrder=desc",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"job-process",
+										"customer"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "11"
+										},
+										{
+											"key": "sortField",
+											"value": "createdAt"
+										},
+										{
+											"key": "sortOrder",
+											"value": "desc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "one",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/job-process/customer/68061aa5c8135b198f3b532b",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"job-process",
+										"customer",
+										"68061aa5c8135b198f3b532b"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "change status",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"status\": \"completed\" /// statau enum\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/job-process/customer/682087a3381f0e904b09ed97",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"job-process",
+										"customer",
+										"682087a3381f0e904b09ed97"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "customer feedback job process",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"rating\": 4.5,\r\n    \"comment\": \"Leave a comment for provider :)\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/job-process/customer/feedback/682087a3381f0e904b09ed97",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"job-process",
+										"customer",
+										"feedback",
+										"682087a3381f0e904b09ed97"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "{{customer}}",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Mechanic",
+					"item": [
+						{
+							"name": "update steps",
+							"item": [
+								{
+									"name": "1 resister",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{ // crate only user\r\n  \"name\": \"Mr. Mechanic\",\r\n  \"email\": \"rjf8fsq721@bltiwd.com\",\r\n  \"role\": \"mechanic\",\r\n  \"password\": \"12345678\",\r\n  \"confirmPassword\": \"12345678\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/auth/register",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"auth",
+												"register"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "2 Personal Information",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "platform",
+													"value": "in shop",
+													"type": "text"
+												},
+												{
+													"key": "phone",
+													"value": "+1234567890",
+													"description": "R",
+													"type": "text"
+												},
+												{
+													"key": "profileImageFile",
+													"description": "it will override profileImage",
+													"type": "file",
+													"src": "postman-cloud:///1f01d9b3-a5e9-49a0-a2f5-b1e68afd353f"
+												},
+												{
+													"key": "profileImage",
+													"value": "file path here....",
+													"description": "pass path if you are not passing file",
+													"type": "text"
+												},
+												{
+													"key": "address",
+													"value": "123 Main St, City, Country",
+													"type": "text"
+												},
+												{
+													"key": "haveLicense",
+													"value": "true",
+													"type": "text",
+													"disabled": true
+												},
+												{
+													"key": "haveCdl",
+													"value": "false",
+													"type": "text",
+													"disabled": true
+												}
+											]
+										},
+										"url": {
+											"raw": "{{baseUrl}}/mechanic/basic-info",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"mechanic",
+												"basic-info"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "3 Experience and Skill",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"experiences\": [ // optional\r\n        {\r\n            \"experienceId\": \"661f753ed934a7b3448a2c22\",\r\n            \"platform\": \"in shop\",\r\n            \"time\": 24\r\n        },\r\n        {\r\n            \"experienceId\": \"661f7566d934a7b3448a2c25\",\r\n            \"platform\": \"on site\",\r\n            \"time\": 12\r\n        }\r\n    ],\r\n    \"certifications\": [\"c1\", \"c2\"] // optional\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/mechanic/experience-certifications",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"mechanic",
+												"experience-certifications"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "4 Tools and Equipment",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"tools\": [\"680f56293694da0e2fcb8eee\", \"680f562d3694da0e2fcb8ef3\", \"680f56513694da0e2fcb8f12\", \"680f56633694da0e2fcb8f1d\", \"680f56643694da0e2fcb8f27\"], // just pass new only\r\n    \"toolsCustom\": [\"custom tool name 1\", \"custom tool name 2\"]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/mechanic/tools",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"mechanic",
+												"tools"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "5 Employment History",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"employmentHistories\" : [\r\n        { // will push this history in exists every time\r\n            \"companyName\": \"AutoFix Garage\", // required\r\n            \"jobName\": \"Senior Mechanic\", // required\r\n            \"supervisorsName\": \"Jane Doe\",\r\n            \"supervisorsContact\": \"01796031853\",\r\n            \"durationFrom\": \"2019-01-01\",\r\n            \"durationTo\": \"2020-12-31\",\r\n            \"platform\": \"in shop\", // requred\r\n            \"reason\": \"Better pay at new company\"\r\n        }\r\n        // other,\r\n        // other,\r\n    ]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/mechanic/employment-history",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"mechanic",
+												"employment-history"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "6 Reference",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"references\": [ // otpinal\r\n    {\r\n        \"name\": \"Alex Johnson\", // required\r\n        \"phone\": \"1234567890\", // required\r\n        \"relation\": \"supervisor\" // required\r\n    },\r\n    {\r\n        \"name\": \"Alex Johnson\",\r\n        \"phone\": \"1234567890\",\r\n        \"relation\": \"supervisor\"\r\n    },\r\n    {\r\n        \"name\": \"Alex Johnson\",\r\n        \"phone\": \"1234567890\",\r\n        \"relation\": \"supervisor\"\r\n    }\r\n  ]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/mechanic/reference",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"mechanic",
+												"reference"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "7 Additional Information",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"whyOnSite\": \"Why on site\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/mechanic/why-on-site",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"mechanic",
+												"why-on-site"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "8 Resume and Certificate",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "resumeFile",
+													"description": "it will override resume",
+													"type": "file",
+													"src": "postman-cloud:///1f01d9b3-a5e9-49a0-a2f5-b1e68afd353f"
+												},
+												{
+													"key": "resume",
+													"value": "file path here",
+													"description": "pass path if you are not passing file",
+													"type": "text"
+												},
+												{
+													"key": "certificateFile",
+													"description": "it will override certificate",
+													"type": "file",
+													"src": "postman-cloud:///1f01d9b3-a5e9-49a0-a2f5-b1e68afd353f"
+												},
+												{
+													"key": "certificate",
+													"value": "file path here",
+													"description": "pass path if you are not passing file",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{baseUrl}}/mechanic/resume-certificate",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"mechanic",
+												"resume-certificate"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"packages": {},
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"packages": {},
+										"exec": [
+											""
+										]
+									}
+								}
+							]
+						},
+						{
+							"name": "update mechanic",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{accessToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"John Doe Updated\",\r\n    \"platform\": \"in shop\",\r\n    \"phone\": \"+1234567890\",\r\n    \"address\": \"123 Main St, City, Country\",\r\n    \"haveLicense\": true,\r\n    \"haveCdl\": false,\r\n    \"experiences\": [ // optional\r\n        {\r\n            \"experienceId\": \"661f753ed934a7b3448a2c22\",\r\n            \"platform\": \"in shop\",\r\n            \"time\": 24\r\n        },\r\n        {\r\n            \"experienceId\": \"661f7566d934a7b3448a2c25\",\r\n            \"platform\": \"on site\",\r\n            \"time\": 12\r\n        }\r\n    ],\r\n    \"certifications\": [\r\n        \"c1\",\r\n        \"c2\"\r\n    ], // optional\r\n    \"tools\": [\r\n        \"680f56293694da0e2fcb8eee\",\r\n        \"680f562d3694da0e2fcb8ef3\",\r\n        \"680f56513694da0e2fcb8f12\",\r\n        \"680f56633694da0e2fcb8f1d\",\r\n        \"680f56643694da0e2fcb8f27\"\r\n    ], // just pass new only\r\n    \"toolsCustom\": [\r\n        \"custom tool name 1\",\r\n        \"custom tool name 2\"\r\n    ],\r\n    \"employmentHistories\": [\r\n        { // will push this history in exists every time\r\n            \"companyName\": \"AutoFix Garage\", // required\r\n            \"jobName\": \"Senior Mechanic\", // required\r\n            \"supervisorsName\": \"Jane Doe\",\r\n            \"supervisorsContact\": \"01796031853\",\r\n            \"durationFrom\": \"2019-01-01\",\r\n            \"durationTo\": \"2020-12-31\",\r\n            \"platform\": \"in shop\", // requred\r\n            \"reason\": \"Better pay at new company\"\r\n        }\r\n        // other,\r\n        // other,\r\n    ],\r\n    \"references\": [ // otpinal\r\n        {\r\n            \"name\": \"Alex Johnson\", // required\r\n            \"phone\": \"1234567890\", // required\r\n            \"relation\": \"supervisor\" // required\r\n        },\r\n        {\r\n            \"name\": \"Alex Johnson\",\r\n            \"phone\": \"1234567890\",\r\n            \"relation\": \"supervisor\"\r\n        },\r\n        {\r\n            \"name\": \"Alex Johnson\",\r\n            \"phone\": \"1234567890\",\r\n            \"relation\": \"supervisor\"\r\n        }\r\n    ],\r\n    \"whyOnSite\": \"Why on site\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/user/me",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"user",
+										"me"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODIxNmVkZjExZTM5MTZlNGJlMDgyMzkiLCJlbWFpbCI6InJqZjhmc3E3MjFAYmx0aXdkLmNvbSIsInJvbGUiOiJtZWNoYW5pYyIsImlhdCI6MTc0NzAyMTU3OCwiZXhwIjoxNzQ3NDUzNTc4fQ.CU5H7cB-LjlCRtgUUz2Hw7N8H35pkciyiHk37agZlFA",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Tow Truck",
+					"item": [
+						{
+							"name": "update steps",
+							"item": [
+								{
+									"name": "1 resister",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{ // crate only user\r\n  \"name\": \"Mr. Tow Truck\",\r\n  \"email\": \"7q5hur2vxq@illubd.com\",\r\n  \"role\": \"tow_truck\",\r\n  \"password\": \"12345678\",\r\n  \"confirmPassword\": \"12345678\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/auth/register",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"auth",
+												"register"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "2 Basic Info...",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "profileImage",
+													"type": "file",
+													"src": "postman-cloud:///1f01d9b3-a5e9-49a0-a2f5-b1e68afd353f"
+												},
+												{
+													"key": "phone",
+													"value": "+1234567890",
+													"type": "text"
+												},
+												{
+													"key": "address",
+													"value": "123 Main St, City, Country",
+													"type": "text"
+												},
+												{
+													"key": "ppm",
+													"value": "1",
+													"type": "text",
+													"disabled": true
+												},
+												{
+													"key": "llc",
+													"value": "llc here",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{baseUrl}}/tow-truck/basic-info",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"tow-truck",
+												"basic-info"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "3 Company Information",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"companyName\": \"Fast Tow Services\",\r\n    \"companyOwner\": \"Robert Miles\",\r\n    \"companyPhone\": \"123-456-7890\",\r\n    \"companyEmail\": \"info@fasttow.com\",\r\n    \"companyAddress\": \"123 Towline Ave, Houston, TX\",\r\n    \"yearsInBusiness\": 10,\r\n    \"website\": \"https://www.fasttow.com\",\r\n    \"totalTows\": 2500,\r\n    \"einNo\": \"12-3456789\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/tow-truck/company-info",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"tow-truck",
+												"company-info"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "4 Licensing and Compliance",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "usDotNo",
+													"value": "DOT123456",
+													"type": "text"
+												},
+												{
+													"key": "usDotFile",
+													"type": "file",
+													"src": "postman-cloud:///1f01d9b3-a5e9-49a0-a2f5-b1e68afd353f"
+												},
+												{
+													"key": "policyNo",
+													"value": "POL789456",
+													"type": "text"
+												},
+												{
+													"key": "policyLimit",
+													"value": "1000000",
+													"type": "text",
+													"disabled": true
+												},
+												{
+													"key": "policyFile",
+													"type": "file",
+													"src": "postman-cloud:///1f01d9b3-a5e9-49a0-a2f5-b1e68afd353f"
+												},
+												{
+													"key": "mcNo",
+													"value": "MC789123",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{baseUrl}}/tow-truck/licensing-compliance",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"tow-truck",
+												"licensing-compliance"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "5 Vehicle and Equipment Verification",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"vehicles\": [\r\n    {\r\n      \"year\": 2018,\r\n      \"brand\": \"Ford\",\r\n      \"modelNo\": \"F-450\",\r\n      \"gvwr\": 16000,\r\n      \"type\": \"flatbed\", //  'flatbed' | 'wrecker' | 'heavy-duty' | 'medium-duty' | 'light-duty' | 'other';\r\n      \"video\": \"/videos/f450.mp4\"\r\n    },\r\n    {\r\n      \"year\": 2020,\r\n      \"brand\": \"Chevrolet\",\r\n      \"modelNo\": \"Silverado 3500HD\",\r\n      \"gvwr\": 17000,\r\n      \"type\": \"wrecker\",\r\n      \"video\": \"/videos/silverado.mp4\"\r\n    },\r\n    {\r\n      \"year\": 2019,\r\n      \"brand\": \"Ram\",\r\n      \"modelNo\": \"5500\",\r\n      \"gvwr\": 18000,\r\n      \"type\": \"heavy-duty\",\r\n      \"video\": \"/videos/ram5500.mp4\"\r\n    }\r\n  ]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/tow-truck/vehicles",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"tow-truck",
+												"vehicles"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "6 Service and Coverage Area..",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"services\": [\"light duty towing\", \"medium duty towing\", \"roadside assistance\"],\r\n    \"primaryCity\": \"Houston\",\r\n    \"primaryCountry\": \"USA\",\r\n    \"regionsCovered\": \"Houston Metro Area, Austin, San Antonio\",\r\n    \"emergency24_7\": true,\r\n    \"eta\": \"30-45 minutes\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/tow-truck/service-coverage",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"tow-truck",
+												"service-coverage"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "7 Business requirements and agreements",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "authName",
+													"value": "Robert Miles",
+													"type": "text"
+												},
+												{
+													"key": "authTitle",
+													"value": "Owner",
+													"type": "text"
+												},
+												{
+													"key": "authSignature",
+													"type": "file",
+													"src": "postman-cloud:///1f01d9b3-a5e9-49a0-a2f5-b1e68afd353f"
+												},
+												{
+													"key": "authDate",
+													"value": "2025-04-18",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{baseUrl}}/tow-truck/business-req",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"tow-truck",
+												"business-req"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "update tow truck",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{accessToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"John Doe Updated\",\r\n  \"vehicles\": [\r\n            {\r\n                \"year\": 2018,\r\n                \"brand\": \"Ford\",\r\n                \"modelNo\": \"F-450\",\r\n                \"gvwr\": 16000,\r\n                \"type\": \"flatbed\",\r\n                \"video\": \"/videos/f450.mp4\",\r\n                \"_id\": \"6802495607416af68201566d\",\r\n                \"createdAt\": \"2025-04-18T12:45:10.848Z\",\r\n                \"updatedAt\": \"2025-04-18T12:45:10.848Z\"\r\n            }\r\n        ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/user/me",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"user",
+										"me"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODFmNjlkYjIzMjEzNDNmNGJkODFhNjciLCJlbWFpbCI6IjdxNWh1cjJ2eHFAaWxsdWJkLmNvbSIsInJvbGUiOiJ0b3dfdHJ1Y2siLCJpYXQiOjE3NDY4ODkyMjAsImV4cCI6MTc0NzMyMTIyMH0.8HQi8sd6-F4AzaccLClkbppObvyTVDx_yVJd0rK0H9I",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "get all users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user?limit=10&sortField=createdAt&sortOrder=desc&role=admin",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "sortField",
+									"value": "createdAt"
+								},
+								{
+									"key": "sortOrder",
+									"value": "desc"
+								},
+								{
+									"key": "role",
+									"value": "admin"
+								},
+								{
+									"key": "keyword",
+									"value": "A",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "2",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all mechanics in radius",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{customer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/user/radius/mechanic/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"radius",
+								"mechanic",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all tow truck  in radius",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user/radius/tow_truck/20",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"radius",
+								"tow_truck",
+								"20"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{mechanic}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{customer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/user/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get user (all roles)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user/6802435c61cca0f42b7a78ba",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"6802435c61cca0f42b7a78ba"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "profile update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"John Doe Updated\",\r\n  \"phone\": \"017960315451\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/user/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update admin",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"John Doe Updated\",\r\n  \"phone\": \"017960315451\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/user/6803741af8a7f98b1870f446",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"6803741af8a7f98b1870f446"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update customer",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"John Doe Updated\",\r\n  \"filePath\": \"filePath Updated\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/user/68038117986e19e9ad89faaf",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"68038117986e19e9ad89faaf"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update user status",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"status\": \"active\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/user/6802495607416af682015669",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"6802495607416af682015669"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update user role",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"role\": \"tow_truck\" \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/user/68038117986e19e9ad89faaf",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"68038117986e19e9ad89faaf"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{customer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/user/68038117986e19e9ad89faaf",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"68038117986e19e9ad89faaf"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get user location",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"lan\": \"79603451\", \"lng\": \"54454654\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/user/location/6803741af8a7f98b1870f446",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"location",
+								"6803741af8a7f98b1870f446"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update my location",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"lng\": \"90.4125\", \"lat\": \"23.8103\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/user/location",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"location"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Notification",
+			"item": [
+				{
+					"name": "get all notifications",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{customer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/notification?page=1&limit=11&sortField=createdAt&sortOrder=desc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"notification"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "11"
+								},
+								{
+									"key": "sortField",
+									"value": "createdAt"
+								},
+								{
+									"key": "sortOrder",
+									"value": "desc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "unseen notifications count",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{customer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/notification/count",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"notification",
+								"count"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Message",
+			"item": [
+				{
+					"name": "get all messages",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{customer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/message/680f62b6d27dd4a2b40dd788?page=1&limit=11&sortField=createdAt&sortOrder=desc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"message",
+								"680f62b6d27dd4a2b40dd788"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "11"
+								},
+								{
+									"key": "sortField",
+									"value": "createdAt"
+								},
+								{
+									"key": "sortOrder",
+									"value": "desc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "threads",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{customer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/message/thread/all",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"message",
+								"thread",
+								"all"
+							],
+							"query": [
+								{
+									"key": "sortField",
+									"value": "createdAt",
+									"disabled": true
+								},
+								{
+									"key": "sortOrder",
+									"value": "desc",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read thread",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/message/thread/read/680dd9ce000aaebe4f8a55a3",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"message",
+								"thread",
+								"read",
+								"680dd9ce000aaebe4f8a55a3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Setting",
+			"item": [
+				{
+					"name": "privacy policy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/setting/privacy-policy",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"setting",
+								"privacy-policy"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "privacy policy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"value\": \"Hi this is privacy-policy\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/setting/privacy-policy",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"setting",
+								"privacy-policy"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "terms-conditions",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/setting/terms-conditions",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"setting",
+								"terms-conditions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "terms-conditions",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"value\": \"This is terms data\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/setting/terms-conditions",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"setting",
+								"terms-conditions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "about-us",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/setting/about-us",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"setting",
+								"about-us"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "about-us",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"value\": \"this is about us\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/setting/about-us",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"setting",
+								"about-us"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "radius-limits",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/setting/radius-limits",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"setting",
+								"radius-limits"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "radius-limits",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"value\": {\r\n        \"min\": 1,\r\n        \"max\": 100\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/setting/radius-limits",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"setting",
+								"radius-limits"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "commission-rate",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/setting/commission-rate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"setting",
+								"commission-rate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "commission-rate",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"value\": 20.01\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/setting/commission-rate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"setting",
+								"commission-rate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "support",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/setting/support",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"setting",
+								"support"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "support",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"value\": {\r\n        \"details\": \"details data is here..........\",\r\n        \"phone\": \"5246543254145\",\r\n        \"email\": \"support@autorevive.com\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/setting/support",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"setting",
+								"support"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Upload",
+			"item": [
+				{
+					"name": "upload",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var template = `\r",
+									"<style type=\"text/css\">\r",
+									"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+									"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+									"    .tftable tr {background-color:#ffffff;}\r",
+									"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+									"    .tftable tr:hover {background-color:#e0ffff;}\r",
+									"</style>\r",
+									"\r",
+									"<table class=\"tftable\" border=\"1\">\r",
+									"    <tr>\r",
+									"        <th>Field</th>\r",
+									"        <th>Value</th>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>_id</td>\r",
+									"        <td>{{response.data._id}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>Name</td>\r",
+									"        <td>{{response.data.name}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>Email</td>\r",
+									"        <td>{{response.data.email}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>Phone</td>\r",
+									"        <td>{{response.data.phone}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>Address</td>\r",
+									"        <td>{{response.data.address}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>Role</td>\r",
+									"        <td>{{response.data.role}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>Status</td>\r",
+									"        <td>{{response.data.status}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>Is Email Verified</td>\r",
+									"        <td>{{response.data.isEmailVerified}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>Is Reset Password</td>\r",
+									"        <td>{{response.data.isResetPassword}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>Failed Login Attempts</td>\r",
+									"        <td>{{response.data.failedLoginAttempts}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>Created At</td>\r",
+									"        <td>{{response.data.createdAt}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>Updated At</td>\r",
+									"        <td>{{response.data.updatedAt}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>User Number</td>\r",
+									"        <td>{{response.data.userNo}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>__v</td>\r",
+									"        <td>{{response.data.__v}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>Is Deleted</td>\r",
+									"        <td>{{response.data.isDeleted}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>ID</td>\r",
+									"        <td>{{response.data.id}}</td>\r",
+									"    </tr>\r",
+									"</table>\r",
+									"`;\r",
+									"\r",
+									"function constructVisualizerPayload() {\r",
+									"    return {response: pm.response.json()};\r",
+									"}\r",
+									"\r",
+									"pm.visualizer.set(template, constructVisualizerPayload());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODBlMGNhZGU3MmVkNTQyY2M5ZDdlYTQiLCJlbWFpbCI6ImN1c3RvbWVyMUBnbWFpbC5jb20iLCJyb2xlIjoiY3VzdG9tZXIiLCJ0eXBlIjoidmVyaWZ5X2VtYWlsIiwiaWF0IjoxNzQ1NzUxMjE0LCJleHAiOjE3NDU3NTE4MTR9.CgS0xPGI1Vit_5uI93wm00coQPBzZGMBoMeb-Y-khzE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "postman-cloud:///1f01d9b3-a5e9-49a0-a2f5-b1e68afd353f"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/upload",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "upload muljtiple",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var template = `\r",
+									"<style type=\"text/css\">\r",
+									"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}\r",
+									"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}\r",
+									"    .tftable tr {background-color:#ffffff;}\r",
+									"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}\r",
+									"    .tftable tr:hover {background-color:#e0ffff;}\r",
+									"</style>\r",
+									"\r",
+									"<table class=\"tftable\" border=\"1\">\r",
+									"    <tr>\r",
+									"        <th>Field</th>\r",
+									"        <th>Value</th>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>_id</td>\r",
+									"        <td>{{response.data._id}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>Name</td>\r",
+									"        <td>{{response.data.name}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>Email</td>\r",
+									"        <td>{{response.data.email}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>Phone</td>\r",
+									"        <td>{{response.data.phone}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>Address</td>\r",
+									"        <td>{{response.data.address}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>Role</td>\r",
+									"        <td>{{response.data.role}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>Status</td>\r",
+									"        <td>{{response.data.status}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>Is Email Verified</td>\r",
+									"        <td>{{response.data.isEmailVerified}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>Is Reset Password</td>\r",
+									"        <td>{{response.data.isResetPassword}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>Failed Login Attempts</td>\r",
+									"        <td>{{response.data.failedLoginAttempts}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>Created At</td>\r",
+									"        <td>{{response.data.createdAt}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>Updated At</td>\r",
+									"        <td>{{response.data.updatedAt}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>User Number</td>\r",
+									"        <td>{{response.data.userNo}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>__v</td>\r",
+									"        <td>{{response.data.__v}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>Is Deleted</td>\r",
+									"        <td>{{response.data.isDeleted}}</td>\r",
+									"    </tr>\r",
+									"    <tr>\r",
+									"        <td>ID</td>\r",
+									"        <td>{{response.data.id}}</td>\r",
+									"    </tr>\r",
+									"</table>\r",
+									"`;\r",
+									"\r",
+									"function constructVisualizerPayload() {\r",
+									"    return {response: pm.response.json()};\r",
+									"}\r",
+									"\r",
+									"pm.visualizer.set(template, constructVisualizerPayload());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "files",
+									"type": "file",
+									"src": [
+										"postman-cloud:///1f01d9b3-a5e9-49a0-a2f5-b1e68afd353f",
+										"postman-cloud:///1f01d9b2-a6e6-4660-a447-77df3df17cd5"
+									]
+								},
+								{
+									"key": "files",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/upload/multiple",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"upload",
+								"multiple"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payment",
+			"item": [
+				{
+					"name": "webhook",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"amount\": 2000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://192.168.40.192:8080/webhook",
+							"protocol": "http",
+							"host": [
+								"192",
+								"168",
+								"40",
+								"192"
+							],
+							"port": "8080",
+							"path": [
+								"webhook"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create session",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    // \"amount\": 2000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/payment/create-session",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"payment",
+								"create-session"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "refund",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/payment/refund/681621472b10546f84b9b62a",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"payment",
+								"refund",
+								"681621472b10546f84b9b62a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reject refund",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/payment/refund/reject/681621472b10546f84b9b62a",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"payment",
+								"refund",
+								"reject",
+								"681621472b10546f84b9b62a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Account Link",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/payment/account-link",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"payment",
+								"account-link"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Transfer balance",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"paymentIntentId\": \"pi_3RJb13QQAYTQf7Of17CypwOs\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/payment/transfer",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"payment",
+								"transfer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "tt",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"paymentIntentId\": \"pi_3RJb13QQAYTQf7Of17CypwOs\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/payment/create",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"payment",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "store to db",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{customer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"pi\": \"pi_1234567876zs\", \r\n    \"providerId\": \"60b5b7f859736c3a9c92a111\", \r\n    \"jobId\": \"60b5b7f859736c3a9c92a777\", \r\n    \"type\": \"service\", \r\n    \"amount\": 1000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/payment/store",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"payment",
+								"store"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get stored payment",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"pi\": \"pi_123456786\", \r\n    \"providerId\": \"60b5b7f859736c3a9c92a111\", \r\n    \"jobId\": \"60b5b7f859736c3a9c92a777\", \r\n    \"type\": \"service\", \r\n    \"amount\": 1000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/payment/one/681621472b10546f84b9b62a",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"payment",
+								"one",
+								"681621472b10546f84b9b62a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get stored all",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"pi\": \"pi_123456786\", \r\n    \"providerId\": \"60b5b7f859736c3a9c92a111\", \r\n    \"jobId\": \"60b5b7f859736c3a9c92a777\", \r\n    \"type\": \"service\", \r\n    \"amount\": 1000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/payment/all?page=1&limit=11&sortField=createdAt&sortOrder=desc&status=paid",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"payment",
+								"all"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "11"
+								},
+								{
+									"key": "sortField",
+									"value": "createdAt"
+								},
+								{
+									"key": "sortOrder",
+									"value": "desc"
+								},
+								{
+									"key": "status",
+									"value": "paid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get stored all pending refund",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"pi\": \"pi_123456786\", \r\n    \"providerId\": \"60b5b7f859736c3a9c92a111\", \r\n    \"jobId\": \"60b5b7f859736c3a9c92a777\", \r\n    \"type\": \"service\", \r\n    \"amount\": 1000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/payment/all?page=1&limit=11&sortField=createdAt&sortOrder=desc&isRefundRequested=true",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"payment",
+								"all"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "11"
+								},
+								{
+									"key": "sortField",
+									"value": "createdAt"
+								},
+								{
+									"key": "sortOrder",
+									"value": "desc"
+								},
+								{
+									"key": "isRefundRequested",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get chart",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"pi\": \"pi_123456786\", \r\n    \"providerId\": \"60b5b7f859736c3a9c92a111\", \r\n    \"jobId\": \"60b5b7f859736c3a9c92a777\", \r\n    \"type\": \"service\", \r\n    \"amount\": 1000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/payment/chart?month=5&year=2025",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"payment",
+								"chart"
+							],
+							"query": [
+								{
+									"key": "month",
+									"value": "5"
+								},
+								{
+									"key": "year",
+									"value": "2025"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Dashboard",
+			"item": [
+				{
+					"name": "Home",
+					"item": [
+						{
+							"name": "home",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{admin}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/dashboard?recentLimit=5",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard"
+									],
+									"query": [
+										{
+											"key": "recentLimit",
+											"value": "5"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get chart Copy",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{admin}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"pi\": \"pi_123456786\", \r\n    \"providerId\": \"60b5b7f859736c3a9c92a111\", \r\n    \"jobId\": \"60b5b7f859736c3a9c92a777\", \r\n    \"type\": \"service\", \r\n    \"amount\": 1000\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/payment/chart?month=5&year=2025",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"payment",
+										"chart"
+									],
+									"query": [
+										{
+											"key": "month",
+											"value": "5"
+										},
+										{
+											"key": "year",
+											"value": "2025"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "All Usrs",
+					"item": [
+						{
+							"name": "get all users Copy",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/user?limit=10&sortField=createdAt&sortOrder=desc&role=admin&keyword=A&page=2",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"user"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "10"
+										},
+										{
+											"key": "sortField",
+											"value": "createdAt"
+										},
+										{
+											"key": "sortOrder",
+											"value": "desc"
+										},
+										{
+											"key": "role",
+											"value": "admin"
+										},
+										{
+											"key": "keyword",
+											"value": "A"
+										},
+										{
+											"key": "page",
+											"value": "2"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update user status Copy",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{accessToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"status\": \"active\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/user/6815fcfda09b14c29aa6bf8e",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"user",
+										"6815fcfda09b14c29aa6bf8e"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update user role Copy",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{accessToken}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"role\": \"mechanic\" \r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/user/6815fcfda09b14c29aa6bf8e",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"user",
+										"6815fcfda09b14c29aa6bf8e"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Earnings",
+					"item": [
+						{
+							"name": "earnings",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{admin}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"pi\": \"pi_123456786\", \r\n    \"providerId\": \"60b5b7f859736c3a9c92a111\", \r\n    \"jobId\": \"60b5b7f859736c3a9c92a777\", \r\n    \"type\": \"service\", \r\n    \"amount\": 1000\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/dashboard/earnings?page=1&limit=11&sortField=createdAt&sortOrder=desc&status=success&keyword=pi_1234567876zs",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"earnings"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "11"
+										},
+										{
+											"key": "sortField",
+											"value": "createdAt"
+										},
+										{
+											"key": "sortOrder",
+											"value": "desc"
+										},
+										{
+											"key": "status",
+											"value": "success"
+										},
+										{
+											"key": "keyword",
+											"value": "pi_1234567876zs"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "pagination hit",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{admin}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"pi\": \"pi_123456786\", \r\n    \"providerId\": \"60b5b7f859736c3a9c92a111\", \r\n    \"jobId\": \"60b5b7f859736c3a9c92a777\", \r\n    \"type\": \"service\", \r\n    \"amount\": 1000\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/payment/all?page=1&limit=11&sortField=createdAt&sortOrder=desc&status=success&keyword=680f1c16f659b628c193c240",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"payment",
+										"all"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "11"
+										},
+										{
+											"key": "sortField",
+											"value": "createdAt"
+										},
+										{
+											"key": "sortOrder",
+											"value": "desc"
+										},
+										{
+											"key": "status",
+											"value": "success"
+										},
+										{
+											"key": "keyword",
+											"value": "680f1c16f659b628c193c240"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Withdraw",
+					"item": [
+						{
+							"name": "withdraw pendings",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{admin}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"pi\": \"pi_123456786\", \r\n    \"providerId\": \"60b5b7f859736c3a9c92a111\", \r\n    \"jobId\": \"60b5b7f859736c3a9c92a777\", \r\n    \"type\": \"service\", \r\n    \"amount\": 1000\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/dashboard/earnings?page=1&limit=11&sortField=createdAt&sortOrder=desc&status=withdraw-pending&keyword=680f1c16f659b628c193c240",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"dashboard",
+										"earnings"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "11"
+										},
+										{
+											"key": "sortField",
+											"value": "createdAt"
+										},
+										{
+											"key": "sortOrder",
+											"value": "desc"
+										},
+										{
+											"key": "status",
+											"value": "withdraw-pending"
+										},
+										{
+											"key": "keyword",
+											"value": "680f1c16f659b628c193c240"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "pagination hit",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{admin}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"pi\": \"pi_123456786\", \r\n    \"providerId\": \"60b5b7f859736c3a9c92a111\", \r\n    \"jobId\": \"60b5b7f859736c3a9c92a777\", \r\n    \"type\": \"service\", \r\n    \"amount\": 1000\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/payment/all?page=1&limit=11&sortField=createdAt&sortOrder=desc&status=withdraw-pending&keyword=680f1c16f659b628c193c240",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"payment",
+										"all"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "11"
+										},
+										{
+											"key": "sortField",
+											"value": "createdAt"
+										},
+										{
+											"key": "sortOrder",
+											"value": "desc"
+										},
+										{
+											"key": "status",
+											"value": "withdraw-pending"
+										},
+										{
+											"key": "keyword",
+											"value": "680f1c16f659b628c193c240"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Refund",
+					"item": [
+						{
+							"name": "refund pendings",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{admin}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"pi\": \"pi_123456786\", \r\n    \"providerId\": \"60b5b7f859736c3a9c92a111\", \r\n    \"jobId\": \"60b5b7f859736c3a9c92a777\", \r\n    \"type\": \"service\", \r\n    \"amount\": 1000\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/payment/all?page=1&limit=11&sortField=createdAt&sortOrder=desc&keyword=&isRefundRequested=true",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"payment",
+										"all"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "11"
+										},
+										{
+											"key": "sortField",
+											"value": "createdAt"
+										},
+										{
+											"key": "sortOrder",
+											"value": "desc"
+										},
+										{
+											"key": "status",
+											"value": "success",
+											"disabled": true
+										},
+										{
+											"key": "keyword",
+											"value": ""
+										},
+										{
+											"key": "isRefundRequested",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get stored payment Copy",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{admin}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"pi\": \"pi_123456786\", \r\n    \"providerId\": \"60b5b7f859736c3a9c92a111\", \r\n    \"jobId\": \"60b5b7f859736c3a9c92a777\", \r\n    \"type\": \"service\", \r\n    \"amount\": 1000\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/payment/one/681621472b10546f84b9b62a",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"payment",
+										"one",
+										"681621472b10546f84b9b62a"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "refund Copy",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/payment/refund/681621472b10546f84b9b62a",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"payment",
+										"refund",
+										"681621472b10546f84b9b62a"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "refund histories",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{admin}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"pi\": \"pi_123456786\", \r\n    \"providerId\": \"60b5b7f859736c3a9c92a111\", \r\n    \"jobId\": \"60b5b7f859736c3a9c92a777\", \r\n    \"type\": \"service\", \r\n    \"amount\": 1000\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/payment/all?page=1&limit=11&sortField=createdAt&sortOrder=desc&status=refunded&keyword=680f1c16f659b628c193c240&isRefundRequested=true",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"payment",
+										"all"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "11"
+										},
+										{
+											"key": "sortField",
+											"value": "createdAt"
+										},
+										{
+											"key": "sortOrder",
+											"value": "desc"
+										},
+										{
+											"key": "status",
+											"value": "refunded"
+										},
+										{
+											"key": "keyword",
+											"value": "680f1c16f659b628c193c240"
+										},
+										{
+											"key": "isRefundRequested",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Service Copy",
+					"item": [
+						{
+							"name": "get all services",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Gasoline Engine Repair\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/service",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"service"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "add service",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Service DDDDD\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/service",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"service"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update service",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Service F Updated\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/service/681a0c5bb6219586a47ee467",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"service",
+										"681a0c5bb6219586a47ee467"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete service",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/service/681a0cadb6219586a47ee476",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"service",
+										"681a0cadb6219586a47ee476"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Car Model Copy",
+					"item": [
+						{
+							"name": "get all car models",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Gasoline Engine Repair\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/car-model",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"car-model"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "add new car model",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{admin}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Car Model A\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/car-model",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"car-model"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update car model",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Model Updated\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/car-model/6803b78411ac38217099402c",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"car-model",
+										"6803b78411ac38217099402c"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete car model",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/car-model/68046c2253d62b44f392c237",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"car-model",
+										"68046c2253d62b44f392c237"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Experience Copy",
+					"item": [
+						{
+							"name": "get all",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/experience",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"experience"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "add experience",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Gasoline Engine Repair\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/experience",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"experience"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update experience",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Gasoline\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/experience/68046e066803f6a0972da0da",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"experience",
+										"68046e066803f6a0972da0da"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete experience",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/experience/68046e066803f6a0972da0da",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"experience",
+										"68046e066803f6a0972da0da"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Tool Copy",
+					"item": [
+						{
+							"name": "get all tools",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Gasoline Engine Repair\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/tool",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"tool"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "add new tools",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Ratchets (Standard & Flex Head)\",\r\n    \"group\": \"Basic hand\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/tool",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"tool"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update new tools",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Ratchets\",\r\n    \"group\": \"Basic hand\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/tool/68046cf253d62b44f392c247",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"tool",
+										"68046cf253d62b44f392c247"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete new tools",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/tool/68046cf253d62b44f392c247",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"tool",
+										"68046cf253d62b44f392c247"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{admin}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "accessToken",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODAyMzIxM2U4NjYwNDAyMjhlZWJhOGYiLCJlbWFpbCI6ImN1c3RvbWVyQGdtYWlsLmNvbSIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc0NTQxMzQ5MCwiZXhwIjoxNzQ1ODQ1NDkwfQ.o2KVHSBHGdu6Hg3qvDcj651ybb2C3BMsOVc67wzBu1w",
+			"type": "string"
+		},
+		{
+			"key": "mechanic",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODBmMWUwY2Y2NTliNjI4YzE5M2MyNWQiLCJlbWFpbCI6Im1lY2hhbmljQGdtYWlsLmNvbSIsInJvbGUiOiJtZWNoYW5pYyIsImlhdCI6MTc0NjMzNjkyNywiZXhwIjoxNzQ2NzY4OTI3fQ.pV53nyrHA_PLAsh3ulHI-MsJ13KP9A-IKijzU0RMBpg",
+			"type": "string"
+		},
+		{
+			"key": "customer",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODBmMWMxNmY2NTliNjI4YzE5M2MyNDAiLCJlbWFpbCI6ImN1c3RvbWVyQGdtYWlsLmNvbSIsInJvbGUiOiJjdXN0b21lciIsImlhdCI6MTc0Njk1NjkwMCwiZXhwIjoxNzQ3Mzg4OTAwfQ.889XDalxtafeYZm5GWZeiLc8GnRONgpHs8PBSFhfpY4",
+			"type": "string"
+		},
+		{
+			"key": "tow_truck",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODBmOTZmOTFjOGQ4NDY5NmJmMGJkZWMiLCJlbWFpbCI6InRvd190cnVja0BnbWFpbC5jb20iLCJyb2xlIjoidG93X3RydWNrIiwiaWF0IjoxNzQ1ODUyMTg5LCJleHAiOjE3NDYyODQxODl9.VUxbgNkZZ4wdcKd6X613WltRYfn2IQNjZkuHTEcIBH0",
+			"type": "string"
+		},
+		{
+			"key": "baseUrl",
+			"value": "http://192.168.0.101:8088/api/v1",
+			"type": "string",
+			"disabled": true
+		},
+		{
+			"key": "baseUrl",
+			"value": "http://192.168.40.192:8080/api/v1",
+			"type": "string"
+		},
+		{
+			"key": "baseUrl",
+			"value": "http://192.168.10.80:8080/api/v1",
+			"type": "string",
+			"disabled": true
+		},
+		{
+			"key": "admin",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODBmMWI4NWY2NTliNjI4YzE5M2MyMmEiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc0NjI3OTY4NiwiZXhwIjoxNzQ2NzExNjg2fQ.9GD38qbvrvO5cRCQRwtm46jxWaVwdYZwwfz8BG9TCyk",
+			"type": "string"
+		}
+	]
+}
