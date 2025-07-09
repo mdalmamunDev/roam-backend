@@ -5,13 +5,11 @@ import { TUser } from './user.interface';
 import { User } from './user.model';
 import { sendAdminOrSuperAdminCreationEmail } from '../../helpers/emailService';
 import { CustomerService } from '../customer/customer.service';
-import { MechanicService } from '../mechanic/mechanic.service';
 import { TowTruckService } from '../tow truck/tow truck.service';
 import { Role, TUserStatus } from './user.constant';
 import { ObjectId } from 'mongoose';
 import colors from 'colors';
 import { logger } from '../../shared/logger';
-import { JobProcessService } from '../Job processes/job processes.service';
 import moment from 'moment';
 
 interface IAdminOrSuperAdminPayload {
@@ -119,7 +117,7 @@ const getSingleUser = async (userId: string): Promise<TUser | null> => {
   if (result.role === ('customer' as Role)) {
     result2 = await CustomerService.getCustomer(result._id);
   } else if (result.role === ('mechanic' as Role)) {
-    result2 = await MechanicService.getMechanic(result._id);
+    //result2 = await MechanicService.getMechanic(result._id);
   } else if (result.role === ('tow_truck' as Role)) {
     result2 = await TowTruckService.getTowTruck(result._id);
   }
@@ -154,7 +152,7 @@ const updateUserProfile = async (
   if (result.role === ('customer' as Role)) {
     result2 = await CustomerService.updateCustomer(result._id, payload);
   } else if (result.role === ('mechanic' as Role)) {
-    result2 = await MechanicService.updateMechanic(result._id, payload);
+    //result2 = await MechanicService.updateMechanic(result._id, payload);
   } else if (result.role === ('tow_truck' as Role)) {
     result2 = await TowTruckService.updateTowTruck(result._id, payload);
   }
@@ -252,7 +250,7 @@ const updateUserLocation = async (data: { userId: string, lng: number; lat: numb
   // get the user IDs to share the location with
   let userIds: any[] = [];
   try {
-    userIds = await JobProcessService.getUsersIdForShareLocation(userId);
+    // userIds = await JobProcessService.getUsersIdForShareLocation(userId);
   } catch (error) {
     logger.error(colors.red(`Error retrieving user IDs for location sharing: ${error}`));
     return;

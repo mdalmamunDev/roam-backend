@@ -1,5 +1,4 @@
 import { Types } from 'mongoose';
-import ITTVehicle from '../tt vehicle/tt vehicle.interface';
 
 interface ITowTruck {
   userId: Types.ObjectId;
@@ -21,7 +20,6 @@ interface ITowTruck {
   policyFile: string;
   mcNo: string;
   mcFile: string;
-  vehicles: ITTVehicle[]; // list of vehicles
   services: string[];
   primaryCity: string;
   primaryCountry: string;

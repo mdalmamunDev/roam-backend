@@ -6,3 +6,6 @@ dist
 
 # Firebase credentials
 firebase-adminsdk.json
+
+# Drawio
+.$Diagram.drawio.*

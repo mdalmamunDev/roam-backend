@@ -1,6 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
 import ITowTruck from './tow truck.interface';
-import TTVehicleSchema from '../tt vehicle/tt vehicle.schema';
 
 const towTruckSchema = new Schema<ITowTruck>(
   {
@@ -63,10 +62,6 @@ const towTruckSchema = new Schema<ITowTruck>(
     },
     mcFile: {
       type: String,
-    },
-    vehicles: {
-      type: [TTVehicleSchema],
-      default: [],
     },
     services: {
       type: [String], // Array of strings for services offered

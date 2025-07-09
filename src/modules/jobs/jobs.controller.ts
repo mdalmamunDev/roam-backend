@@ -8,61 +8,57 @@ import paginate from '../../helpers/paginationHelper';
 import IJob, { IJobStatus, JobStatus } from './jobs.interface';
 import { User } from '../user/user.model';
 import { getAddressFromCoordinates, getDistanceInMiles } from '../../helpers/globalHelper';
-import JobProcess from '../Job processes/job processes.model';
-import { JobProcessStatusDone, JobProcessStatusFinal } from '../Job processes/job processes.interface';
-import { JobProcessService } from '../Job processes/job processes.service';
 
 // get all active jobs by customer
 const getAllForCustomer = catchAsync(async (req, res) => {
-  const customerId = req.user?.userId;
-  if (!customerId) {
-    throw new ApiError(StatusCodes.UNAUTHORIZED, 'Unauthorized access.');
-  }
+  // const customerId = req.user?.userId;
+  // if (!customerId) {
+  //   throw new ApiError(StatusCodes.UNAUTHORIZED, 'Unauthorized access.');
+  // }
 
-  const { page = 1, limit = 10, sortField = 'createdAt', sortOrder = 'desc', status } = req.query;
-  if (status && !JobStatus.includes(status as IJobStatus)) {
-    throw new ApiError(StatusCodes.BAD_REQUEST, 'Invalid Status');
-  }
+  // const { page = 1, limit = 10, sortField = 'createdAt', sortOrder = 'desc', status } = req.query;
+  // if (status && !JobStatus.includes(status as IJobStatus)) {
+  //   throw new ApiError(StatusCodes.BAD_REQUEST, 'Invalid Status');
+  // }
 
-  let filters: any = { isDeleted: false, customerId }; // Ensure we only get non-deleted jobs
-  if (status) filters.status = status;
+  // let filters: any = { isDeleted: false, customerId }; // Ensure we only get non-deleted jobs
+  // if (status) filters.status = status;
 
-  const { results, pagination } = await paginate({ page: parseInt(page as string), limit: parseInt(limit as string), filters, sortField: sortField as string, sortOrder: sortOrder as string, model: Job, select: 'carModelId platform createdAt status location destination', populate: [{ path: 'carModelId', select: 'name' }], });
+  // const { results, pagination } = await paginate({ page: parseInt(page as string), limit: parseInt(limit as string), filters, sortField: sortField as string, sortOrder: sortOrder as string, model: Job, select: 'carModelId platform createdAt status location destination', populate: [{ path: 'carModelId', select: 'name' }], });
 
 
-  // For each job, fetch the related JobProcess with status 'done'
-  const customRes = await Promise.all(
-    results.map(async (item: any) => {
-      const obj: any = item.toObject ? item.toObject() : { ...item };
-      obj.status = item.status;
+  // // For each job, fetch the related JobProcess with status 'done'
+  // const customRes = await Promise.all(
+  //   results.map(async (item: any) => {
+  //     const obj: any = item.toObject ? item.toObject() : { ...item };
+  //     obj.status = item.status;
 
-      // Find the last final job process
-      const jp: any = await JobProcess.findOne({ jobId: item._id, status: JobProcessStatusFinal }).populate('providerId', 'name profileImage address location role').sort({ createdAt: -1 });
+  //     const jp: any = await JobProcess.findOne({ jobId: item._id, status: JobProcessStatusFinal }).populate('providerId', 'name profileImage address location role').sort({ createdAt: -1 });
 
-      if(jp) {
-        const additionalData = await JobProcessService.getProviderAdditional(req, jp?.providerId);
-        if(additionalData) {
-          obj.provider = {...jp?.providerId._doc, ...additionalData};
-        }
+  //     if(jp) {
+  //       const additionalData = await JobProcessService.getProviderAdditional(req, jp?.providerId);
+  //       if(additionalData) {
+  //         obj.provider = {...jp?.providerId._doc, ...additionalData};
+  //       }
 
-        obj.processStatus = jp.status;
-      }
+  //       obj.processStatus = jp.status;
+  //     }
 
-      if(obj.destination) {
-        obj.destAddress = await getAddressFromCoordinates(obj.destination?.coordinates)
-        obj.totalDistance = getDistanceInMiles(obj.location?.coordinates, obj.destination?.coordinates)?.toFixed(2)
-      }
-      obj.address = await getAddressFromCoordinates(obj.location?.coordinates)
-      obj.location = undefined;
-      obj.destination = undefined;
+  //     if(obj.destination) {
+  //       obj.destAddress = await getAddressFromCoordinates(obj.destination?.coordinates)
+  //       obj.totalDistance = getDistanceInMiles(obj.location?.coordinates, obj.destination?.coordinates)?.toFixed(2)
+  //     }
+  //     obj.address = await getAddressFromCoordinates(obj.location?.coordinates)
+  //     obj.location = undefined;
+  //     obj.destination = undefined;
 
-      return obj;
-    })
-  );
-  // Replace results with customRes for the response
-  results.splice(0, results.length, ...customRes);
+  //     return obj;
+  //   })
+  // );
+  // // Replace results with customRes for the response
+  // results.splice(0, results.length, ...customRes);
 
-  sendResponse(res, { code: StatusCodes.OK, message: 'Jobs retrieved successfully', data: results, pagination });
+  // sendResponse(res, { code: StatusCodes.OK, message: 'Jobs retrieved successfully', data: results, pagination });
 });
 
 const getAllAToZ = catchAsync(async (req, res) => {
