@@ -17,7 +17,7 @@ const validateUserStatus = (user: TUser) => {
   if (user.status === 'rejected') 
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Your account has been rejected. Please contact support');
 
-  if (!user.isDeleted) 
+  if (user.isDeleted) 
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Your account has been deleted. Please contact support');
   
 };

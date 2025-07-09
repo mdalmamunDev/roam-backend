@@ -61,8 +61,8 @@ const auth = (role: string | Role[]) =>
     if(user.isDeleted) {
       throw new ApiError(StatusCodes.UNAUTHORIZED, 'User account is deleted.');
     }
-    if(user.status != "active") {
-      throw new ApiError(StatusCodes.UNAUTHORIZED, 'User account is not active.');
+    if(user.status != "verified") {
+      throw new ApiError(StatusCodes.UNAUTHORIZED, 'User account is not verified.');
     }
 
     req.user.location = user.location; // attach location to req.user
@@ -70,7 +70,6 @@ const auth = (role: string | Role[]) =>
 
     // Step 5: Role-based Authorization
     if (role === 'common') role = UserRole;
-    else if (role === 'provider') role = ['mechanic', 'tow_truck'];
     else if (typeof role === 'string') role = [role as Role];
 
     if (!role.includes(user.role as Role)) {
