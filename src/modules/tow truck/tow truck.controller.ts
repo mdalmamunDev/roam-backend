@@ -29,6 +29,24 @@ class Controller {
     }
 
     sendResponse(res, { code: StatusCodes.CREATED, message: 'Tow Truck basic info stored successfully', data: { ...towTruck, ...user } });
+  });  update = catchAsync(async (req, res) => {
+    // req.body.profileImage = validateFileAndGetName(req);
+
+    const userId = req.user?.userId;
+
+    // Update user profile
+    // Upsert towTruck data
+    const towTruck = await TowTruck.findOneAndUpdate(
+      { userId },
+      req.body,
+      { new: true }
+    ).lean();
+
+    if (!towTruck) {
+      return sendResponse(res, { code: StatusCodes.BAD_REQUEST, message: 'Something went wrong', });
+    }
+
+    sendResponse(res, { code: StatusCodes.CREATED, message: 'Tow Truck updated successfully', data: towTruck });
   });
 }
 

@@ -14,5 +14,25 @@ router.post('/complete-profile',
     passCustomData({ step: 2 }),
     TowTruckController.completeProfile
 );
+router.put('/update-nid',
+    auth('provider'),
+    validateRequest(ValidTT.updateNid),
+    TowTruckController.update
+);
+router.put('/update-license',
+    auth('provider'),
+    validateRequest(ValidTT.updateDrivingLicense),
+    TowTruckController.update
+);
+router.put('/update-reg',
+    auth('provider'),
+    validateRequest(ValidTT.updateCarRegistration),
+    TowTruckController.update
+);
+router.put('/update-img',
+    auth('provider'),
+    validateRequest(ValidTT.updateCarDriverImages),
+    TowTruckController.update
+);
 
 export const TowTruckRoutes = router;

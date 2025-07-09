@@ -9,13 +9,13 @@ interface ITowTruck {
   gender: TGender;
   description: string;
   nidNo : string;
-  nidFont : string;
+  nidFront : string;
   nidBack : string;
   drivingLicenseNo : string;
-  drivingLicenseFont : string;
+  drivingLicenseFront : string;
   drivingLicenseBack : string;
   carRegistrationNo : string;
-  carRegistrationFont : string;
+  carRegistrationFront : string;
   carRegistrationBack : string;
   driverImage : string;
   carImage : string;

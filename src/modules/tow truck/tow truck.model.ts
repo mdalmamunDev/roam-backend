@@ -33,7 +33,7 @@ const towTruckSchema = new Schema<ITowTruck>(
     nidNo: {
       type: String,
     },
-    nidFont: {
+    nidFront: {
       type: String,
     },
     nidBack: {
@@ -42,7 +42,7 @@ const towTruckSchema = new Schema<ITowTruck>(
     drivingLicenseNo: {
       type: String,
     },
-    drivingLicenseFont: {
+    drivingLicenseFront: {
       type: String,
     },
     drivingLicenseBack: {
@@ -51,7 +51,7 @@ const towTruckSchema = new Schema<ITowTruck>(
     carRegistrationNo: {
       type: String,
     },
-    carRegistrationFont: {
+    carRegistrationFront: {
       type: String,
     },
     carRegistrationBack: {

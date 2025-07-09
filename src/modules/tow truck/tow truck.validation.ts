@@ -11,15 +11,15 @@ const gender = z.enum(Gender as [string]);
 const description = z.string().min(1, 'Description is required');
 
 const nidNo = z.string().min(5, 'NID No is required');
-const nidFont = z.string().min(1, 'Invalid front NID image URL');
+const nidFront = z.string().min(1, 'Invalid front NID image URL');
 const nidBack = z.string().min(1, 'Invalid back NID image URL');
 
 const drivingLicenseNo = z.string().min(5, 'License number is required');
-const drivingLicenseFont = z.string().min(1, 'Invalid front license image URL');
+const drivingLicenseFront = z.string().min(1, 'Invalid front license image URL');
 const drivingLicenseBack = z.string().min(1, 'Invalid back license image URL');
 
 const carRegistrationNo = z.string().min(3, 'Car registration number is required');
-const carRegistrationFont = z.string().min(1, 'Invalid front car registration image URL');
+const carRegistrationFront = z.string().min(1, 'Invalid front car registration image URL');
 const carRegistrationBack = z.string().min(1, 'Invalid back car registration image URL');
 
 const driverImage = z.string().min(1, 'Invalid driver image URL');
@@ -34,13 +34,13 @@ const TowTruckValidation = {
   gender,
   description,
   nidNo,
-  nidFont,
+  nidFront,
   nidBack,
   drivingLicenseNo,
-  drivingLicenseFont,
+  drivingLicenseFront,
   drivingLicenseBack,
   carRegistrationNo,
-  carRegistrationFont,
+  carRegistrationFront,
   carRegistrationBack,
   driverImage,
   carImage,
@@ -67,7 +67,7 @@ class Valid {
   updateNid = z.object({
     body: z.object({
       nidNo,
-      nidFont,
+      nidFront,
       nidBack,
     }).strict(), // Ensures no additional properties are allowed
   });
@@ -75,7 +75,7 @@ class Valid {
   updateDrivingLicense = z.object({
     body: z.object({
       drivingLicenseNo,
-      drivingLicenseFont,
+      drivingLicenseFront,
       drivingLicenseBack,
     }).strict(), // Ensures no additional properties are allowed
   });
@@ -83,8 +83,15 @@ class Valid {
   updateCarRegistration = z.object({
     body: z.object({
       carRegistrationNo,
-      carRegistrationFont,
+      carRegistrationFront,
       carRegistrationBack,
+    }).strict(), // Ensures no additional properties are allowed
+  });
+
+  updateCarDriverImages = z.object({
+    body: z.object({
+      driverImage,
+      carImage,
     }).strict(), // Ensures no additional properties are allowed
   });
 }
