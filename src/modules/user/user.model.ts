@@ -4,15 +4,10 @@ import paginate from '../../common/plugins/paginate';
 import bcrypt from 'bcrypt';
 import { config } from '../../config';
 import { UserRole, UserStatus } from './user.constant';
-import { Counter } from './counter';
 
 // User Schema Definition
 const userSchema = new Schema<TUser, UserModal>(
   {
-    userNo: {
-      type: Number,
-      unique: true,
-    },
     sid: {
       type: String,
     },
@@ -51,9 +46,6 @@ const userSchema = new Schema<TUser, UserModal>(
       type: String,
       default: 'users/user.png',
     },
-    nid: {
-      type: String,
-    },
     wallet: {
       type: Number,
       default: 0.00,
@@ -80,7 +72,7 @@ const userSchema = new Schema<TUser, UserModal>(
         values: UserStatus,
         message: '{VALUE} is not a valid role',
       },
-      default: 'active',
+      default: 'pending',
     },
     isEmailVerified: {
       type: Boolean,
@@ -138,26 +130,6 @@ userSchema.pre('save', async function (next) {
       this.password,
       Number(config.bcrypt.saltRounds)
     );
-  }
-
-  // auto increment user_id
-  // auto increment userNo
-  if (this.isNew) {
-    try {
-      const counter = await Counter.findOneAndUpdate(
-        { _id: 'autoIncrement' },
-        { $inc: { sequence_value: 1 } },
-        { new: true, upsert: true }
-      );
-
-      if (counter && counter.sequence_value) {
-        this.userNo = counter.sequence_value;
-      } else {
-        throw new Error('Failed to generate a unique user ID');
-      }
-    } catch (error: any) {
-      return next(error);
-    }
   }
 
   next();

@@ -4,7 +4,6 @@ import { PaginateOptions, PaginateResult } from '../../types/paginate';
 import { TUser } from './user.interface';
 import { User } from './user.model';
 import { sendAdminOrSuperAdminCreationEmail } from '../../helpers/emailService';
-import { CustomerService } from '../customer/customer.service';
 import { TowTruckService } from '../tow truck/tow truck.service';
 import { Role, TUserStatus } from './user.constant';
 import { ObjectId } from 'mongoose';
@@ -115,7 +114,7 @@ const getSingleUser = async (userId: string): Promise<TUser | null> => {
 
   let result2 = null;
   if (result.role === ('customer' as Role)) {
-    result2 = await CustomerService.getCustomer(result._id);
+    //result2 = await CustomerService.getCustomer(result._id);
   } else if (result.role === ('mechanic' as Role)) {
     //result2 = await MechanicService.getMechanic(result._id);
   } else if (result.role === ('tow_truck' as Role)) {
@@ -150,7 +149,7 @@ const updateUserProfile = async (
 
   let result2 = {};
   if (result.role === ('customer' as Role)) {
-    result2 = await CustomerService.updateCustomer(result._id, payload);
+    //result2 = await CustomerService.updateCustomer(result._id, payload);
   } else if (result.role === ('mechanic' as Role)) {
     //result2 = await MechanicService.updateMechanic(result._id, payload);
   } else if (result.role === ('tow_truck' as Role)) {

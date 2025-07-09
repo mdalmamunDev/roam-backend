@@ -16,8 +16,6 @@ const register = catchAsync(async (req, res) => {
     );
   }
 
-  req.body.filePath = req.file?.filename;
-
   const result = await AuthService.createUser(req.body);
   sendResponse(res, {
     code: StatusCodes.CREATED,

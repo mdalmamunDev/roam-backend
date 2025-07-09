@@ -1,16 +1,14 @@
 import { Router } from 'express';
 import { AuthController } from './auth.controller';
 import validateRequest from '../../shared/validateRequest';
-import { createUserValidationSchema, UserValidation } from '../user/user.validation';
+import { createUserValidationSchema } from '../user/user.validation';
 import { AuthValidation } from './auth.validations';
 import auth from '../../middlewares/auth';
 import { extractToken } from '../../middlewares/extractToken';
-import createUploadMiddleware from '../../middlewares/upload';
 
 const router = Router();
 router.post(
   '/register',
-  createUploadMiddleware(20, ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp']).single('file'),
   validateRequest(createUserValidationSchema),
   AuthController.register
 );

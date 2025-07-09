@@ -12,15 +12,14 @@ import { OtpType } from '../otp/otp.interface';
 import { Secret } from 'jsonwebtoken';
 import { UserService } from '../user/user.service';
 import { formatDistanceToNow } from 'date-fns';
-import { CustomerService } from '../customer/customer.service';
 
 const validateUserStatus = (user: TUser) => {
-  if (user.status === 'delete') {
-    throw new ApiError(
-      StatusCodes.BAD_REQUEST,
-      'Your account has been deleted. Please contact support'
-    );
-  }
+  if (user.status === 'rejected') 
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Your account has been rejected. Please contact support');
+
+  if (!user.isDeleted) 
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Your account has been deleted. Please contact support');
+  
 };
 
 const createUser = async (userData: any) => {
@@ -32,10 +31,6 @@ const createUser = async (userData: any) => {
   const user = await User.create(userData);
   if (!user) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'User creation failed');
-  }
-
-  if (userData.role === 'customer') {
-    CustomerService.createCustomer({ userId: user._id, filePath: userData.filePath });
   }
 
   //create verification email token

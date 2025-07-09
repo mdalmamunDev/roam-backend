@@ -6,7 +6,6 @@ import { TGeoLocation, TUserStatus } from './user.constant';
 export type TUser = {
   _id: Types.ObjectId;
   sid: string;
-  userNo: Number;
   name: string;
   email: string;
   phone: string;
@@ -14,7 +13,6 @@ export type TUser = {
   location: TGeoLocation | null;
   profileImage: string;
   wallet: number;
-  nid: string;
   role: Role;
   password: string;
   status: TUserStatus;
