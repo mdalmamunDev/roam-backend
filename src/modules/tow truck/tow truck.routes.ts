@@ -9,30 +9,44 @@ import passCustomData from '../../middlewares/passCustomData';
 const router = Router();
 router.post('/complete-profile',
     auth('provider'),
-    // createUploadMiddleware(20, ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp']).single('profileImage'),
     validateRequest(ValidTT.completeProfile),
     passCustomData({ step: 2 }),
     TowTruckController.completeProfile
 );
-router.put('/update-nid',
+
+router.get('/nid', auth('provider'), TowTruckController.getNid );
+router.put('/nid',
     auth('provider'),
     validateRequest(ValidTT.updateNid),
     TowTruckController.update
 );
-router.put('/update-license',
+
+router.get('/license', auth('provider'), TowTruckController.getLicense );
+router.put('/license',
     auth('provider'),
     validateRequest(ValidTT.updateDrivingLicense),
     TowTruckController.update
 );
-router.put('/update-reg',
+
+router.get('/reg', auth('provider'), TowTruckController.getReg );
+router.put('/reg',
     auth('provider'),
     validateRequest(ValidTT.updateCarRegistration),
     TowTruckController.update
 );
-router.put('/update-img',
+
+router.get('/img', auth('provider'), TowTruckController.getCarDriverImages );
+router.put('/img',
     auth('provider'),
     validateRequest(ValidTT.updateCarDriverImages),
     TowTruckController.update
+);
+
+router.get('/profile', auth('provider'), TowTruckController.profile);
+router.put('/profile',
+    auth('provider'),
+    validateRequest(ValidTT.updateProfile),
+    TowTruckController.updateProfile
 );
 
 export const TowTruckRoutes = router;

@@ -94,6 +94,20 @@ class Valid {
       carImage,
     }).strict(), // Ensures no additional properties are allowed
   });
+
+  updateProfile = z.object({
+    body: z.object({
+      profileImage: UserValidation.profileImage,
+      name: UserValidation.name,
+      companyName,
+      phone: UserValidation.phone,
+      address: UserValidation.address,
+      towTypeId,
+      dateOfBirth,
+      gender,
+      description,
+    }).strict(), // Ensures no additional properties are allowed
+  });
 }
 
 

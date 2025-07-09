@@ -108,20 +108,9 @@ const getFilteredUsersWithConnectionStatus = async (
 
 const getSingleUser = async (userId: string): Promise<TUser | null> => {
   const result = await User.findById(userId).select('-wallet').lean();
-  if (!result) {
-    throw new ApiError(StatusCodes.NOT_FOUND, 'User not found');
-  }
+  if (!result) throw new ApiError(StatusCodes.NOT_FOUND, 'User not found');
+  if (result.isDeleted) throw new ApiError(StatusCodes.NOT_FOUND, 'User deleted');
 
-  let result2 = null;
-  if (result.role === ('customer' as Role)) {
-    //result2 = await CustomerService.getCustomer(result._id);
-  } else if (result.role === ('mechanic' as Role)) {
-    //result2 = await MechanicService.getMechanic(result._id);
-  } else if (result.role === ('tow_truck' as Role)) {
-    result2 = await TowTruckService.getTowTruck(result._id);
-  }
-
-  if (result2) return { ...result2, ...result };
   return result;
 };
 
@@ -147,12 +136,7 @@ const updateUserProfile = async (
     throw new ApiError(StatusCodes.NOT_FOUND, 'User not found');
   }
 
-  let result2 = {};
-  if (result.role === ('provider' as Role)) {
-    result2 = await TowTruckService.updateTowTruck(result._id, payload);
-  }
-
-  return { ...result2, ...result };
+  return result;
 };
 const updateUser = async (userId: string, payload: Partial<TUser>): Promise<TUser | null> => {
   const existingUser = await User.findById(userId).lean();
