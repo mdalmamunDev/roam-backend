@@ -52,10 +52,10 @@ class Controller {
     const userId = req.user?.userId;
 
     const [user, towTruck] = await Promise.all([
-      UserService.updateUser(userId, { profileImage, address, step }),
+      UserService.updateUser(userId, { profileImage, dateOfBirth, address, step }),
       TowTruck.findOneAndUpdate(
         { userId },
-        { companyName, towTypeId, dateOfBirth, gender, description },
+        { companyName, towTypeId, gender, description },
         { new: true, upsert: true, setDefaultsOnInsert: true }
       ).lean()
     ]);
@@ -80,10 +80,10 @@ class Controller {
     const userId = req.user?.userId;
 
     const [user, towTruck] = await Promise.all([
-      UserService.updateUser(userId, { profileImage, name, phone, address }),
+      UserService.updateUser(userId, { profileImage, dateOfBirth, name, phone, address }),
       TowTruck.findOneAndUpdate(
         { userId },
-        { companyName, towTypeId, dateOfBirth, gender, description },
+        { companyName, towTypeId, gender, description },
         { new: true }
       ).lean()
     ]);

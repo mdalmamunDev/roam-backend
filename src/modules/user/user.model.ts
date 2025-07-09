@@ -31,6 +31,7 @@ const userSchema = new Schema<TUser, UserModal>(
       // required: [true, 'Phone number is required'],
     },
     address: { type: String },
+    dateOfBirth: { type: String },
     location: {
       type: {
         type: String,

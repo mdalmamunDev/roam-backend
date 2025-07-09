@@ -6,7 +6,6 @@ import { Gender } from '../user/user.constant';
 const userId = z.string().length(24, 'Invalid user ID');
 const towTypeId = z.string().length(24, 'Invalid tow type ID');
 const companyName = z.string().min(2, 'Company name is required');
-const dateOfBirth = z.string().min(1, 'Date of birth is required');
 const gender = z.enum(Gender as [string]);
 const description = z.string().min(1, 'Description is required');
 
@@ -30,7 +29,6 @@ const TowTruckValidation = {
   userId,
   towTypeId,
   companyName,
-  dateOfBirth,
   gender,
   description,
   nidNo,
@@ -58,7 +56,7 @@ class Valid {
       companyName,
       address: UserValidation.address,
       towTypeId,
-      dateOfBirth,
+      dateOfBirth: UserValidation.dateOfBirth,
       gender,
       description,
     }).strict(), // Ensures no additional properties are allowed
@@ -103,7 +101,7 @@ class Valid {
       phone: UserValidation.phone,
       address: UserValidation.address,
       towTypeId,
-      dateOfBirth,
+      dateOfBirth: UserValidation.dateOfBirth,
       gender,
       description,
     }).strict(), // Ensures no additional properties are allowed

@@ -34,12 +34,14 @@ const phone = phoneValidation.optional();
 const profileImage = z.string().optional();
 
 const address = z.string().min(1, 'Address cannot be empty.').optional();
+const dateOfBirth = z.string().min(1, 'Date of birth cannot be empty.').optional();
 
 export const UserValidation = {
   name,
   profileImage,
   phone,
   address,
+  dateOfBirth,
   password,
   role,
 }
@@ -58,11 +60,10 @@ export const createUserValidationSchema = z.object({
 
 export const updateUserValidationSchema = z.object({
   body: z.object({
-    name: name.optional(),
-    // email: email.optional(),
+    name,
     phone,
     address,
-    role: role.optional(),
+    dateOfBirth,
   }),
 });
 
@@ -72,17 +73,3 @@ export const updateUserStatusOrRoleSchema = z.object({
     status: status.optional(),
   }),
 });
-
-// const changeUserStatusValidationSchema = z.object({
-//   body: z.object({
-//     status: z.enum(['active', 'block'], {
-//       required_error: 'Status is required.',
-//       invalid_type_error: 'Status must be a valid option.',
-//     }),
-//   }),
-// });
-
-// export const UserValidation = {
-//   createUserValidationSchema,
-//   updateUserValidationSchema,
-// };

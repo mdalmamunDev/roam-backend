@@ -10,6 +10,7 @@ export type TUser = {
   email: string;
   phone: string;
   address: string;
+  dateOfBirth: string;
   location: TGeoLocation | null;
   profileImage: string;
   wallet: number;
