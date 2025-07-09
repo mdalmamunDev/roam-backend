@@ -148,11 +148,7 @@ const updateUserProfile = async (
   }
 
   let result2 = {};
-  if (result.role === ('customer' as Role)) {
-    //result2 = await CustomerService.updateCustomer(result._id, payload);
-  } else if (result.role === ('mechanic' as Role)) {
-    //result2 = await MechanicService.updateMechanic(result._id, payload);
-  } else if (result.role === ('tow_truck' as Role)) {
+  if (result.role === ('provider' as Role)) {
     result2 = await TowTruckService.updateTowTruck(result._id, payload);
   }
 

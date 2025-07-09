@@ -10,7 +10,7 @@ const router = express.Router();
 router.get('/', auth('admin'), UserController.getAllUsers);
 
 // get users in radius
-router.get('/radius/:role/:radius', auth('customer'), UserController.getUsersInRadius);
+router.get('/radius/:role/:radius', auth(['user', 'provider']), UserController.getUsersInRadius);
 
 router
   .route('/:userId')

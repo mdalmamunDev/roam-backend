@@ -1,5 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import ITowTruck from './tow truck.interface';
+import { Gender } from '../user/user.constant';
 
 const towTruckSchema = new Schema<ITowTruck>(
   {
@@ -8,90 +9,59 @@ const towTruckSchema = new Schema<ITowTruck>(
       ref: 'User',
       required: true,
     },
-    ppm: {
-      type: Number,
+    towTypeId: { // TODO: make model for this
+      type: Schema.Types.ObjectId,
+      ref: 'TowType',
       required: true,
-    },
-    llc: {
-      type: String,
     },
     companyName: {
       type: String,
+      required: true,
     },
-    companyOwner: {
+    dateOfBirth: {
+      type: String,
+      required: true,
+    },
+    gender: {
+      type: String,
+      enum: Gender,
+      required: true,
+    },
+    description: {
       type: String,
     },
-    companyPhone: {
+    nidNo: {
       type: String,
     },
-    companyEmail: {
+    nidFont: {
       type: String,
     },
-    companyAddress: {
+    nidBack: {
       type: String,
     },
-    yearsInBusiness: {
-      type: Number,
-    },
-    website: {
+    drivingLicenseNo: {
       type: String,
     },
-    totalTows: {
-      type: Number,
-    },
-    einNo: {
+    drivingLicenseFont: {
       type: String,
     },
-    usDotNo: {
+    drivingLicenseBack: {
       type: String,
     },
-    usDotFile: {
+    carRegistrationNo: {
       type: String,
     },
-    policyNo: {
+    carRegistrationFont: {
       type: String,
     },
-    policyLimit: {
-      type: Number,
-    },
-    policyFile: {
+    carRegistrationBack: {
       type: String,
     },
-    mcNo: {
+    driverImage: {
       type: String,
     },
-    mcFile: {
+    carImage: {
       type: String,
-    },
-    services: {
-      type: [String], // Array of strings for services offered
-    },
-    primaryCity: {
-      type: String,
-    },
-    primaryCountry: {
-      type: String,
-    },
-    regionsCovered: {
-      type: String,
-    },
-    emergency24_7: {
-      type: Boolean,
-    },
-    eta: {
-      type: String, // ETA (estimated time of arrival)
-    },
-    authName: {
-      type: String,
-    },
-    authTitle: {
-      type: String,
-    },
-    authSignature: {
-      type: String, // Image path for the signature
-    },
-    authDate: {
-      type: String, // Store day, month, and year
     },
   },
   {
@@ -99,5 +69,5 @@ const towTruckSchema = new Schema<ITowTruck>(
   }
 );
 
-const TowTruck = mongoose.model<ITowTruck>('Tow Truck', towTruckSchema);
+const TowTruck = mongoose.model<ITowTruck>('TowTruck', towTruckSchema);
 export default TowTruck;

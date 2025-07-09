@@ -61,9 +61,9 @@ const auth = (role: string | Role[]) =>
     if(user.isDeleted) {
       throw new ApiError(StatusCodes.UNAUTHORIZED, 'User account is deleted.');
     }
-    if(user.status != "verified") {
-      throw new ApiError(StatusCodes.UNAUTHORIZED, 'User account is not verified.');
-    }
+    // if(user.status != "verified") {
+    //   throw new ApiError(StatusCodes.UNAUTHORIZED, 'User account is not verified.');
+    // }
 
     req.user.location = user.location; // attach location to req.user
     req.user.name = user.name;
