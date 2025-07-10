@@ -8,157 +8,11 @@ import paginate from '../../helpers/paginationHelper';
 import IJob, { IJobStatus, JobStatus } from './jobs.interface';
 import { User } from '../user/user.model';
 import { getAddressFromCoordinates, getDistanceInMiles } from '../../helpers/globalHelper';
-
-// get all active jobs by customer
-const getAllForCustomer = catchAsync(async (req, res) => {
-  // const customerId = req.user?.userId;
-  // if (!customerId) {
-  //   throw new ApiError(StatusCodes.UNAUTHORIZED, 'Unauthorized access.');
-  // }
-
-  // const { page = 1, limit = 10, sortField = 'createdAt', sortOrder = 'desc', status } = req.query;
-  // if (status && !JobStatus.includes(status as IJobStatus)) {
-  //   throw new ApiError(StatusCodes.BAD_REQUEST, 'Invalid Status');
-  // }
-
-  // let filters: any = { isDeleted: false, customerId }; // Ensure we only get non-deleted jobs
-  // if (status) filters.status = status;
-
-  // const { results, pagination } = await paginate({ page: parseInt(page as string), limit: parseInt(limit as string), filters, sortField: sortField as string, sortOrder: sortOrder as string, model: Job, select: 'carModelId platform createdAt status location destination', populate: [{ path: 'carModelId', select: 'name' }], });
-
-
-  // // For each job, fetch the related JobProcess with status 'done'
-  // const customRes = await Promise.all(
-  //   results.map(async (item: any) => {
-  //     const obj: any = item.toObject ? item.toObject() : { ...item };
-  //     obj.status = item.status;
-
-  //     const jp: any = await JobProcess.findOne({ jobId: item._id, status: JobProcessStatusFinal }).populate('providerId', 'name profileImage address location role').sort({ createdAt: -1 });
-
-  //     if(jp) {
-  //       const additionalData = await JobProcessService.getProviderAdditional(req, jp?.providerId);
-  //       if(additionalData) {
-  //         obj.provider = {...jp?.providerId._doc, ...additionalData};
-  //       }
-
-  //       obj.processStatus = jp.status;
-  //     }
-
-  //     if(obj.destination) {
-  //       obj.destAddress = await getAddressFromCoordinates(obj.destination?.coordinates)
-  //       obj.totalDistance = getDistanceInMiles(obj.location?.coordinates, obj.destination?.coordinates)?.toFixed(2)
-  //     }
-  //     obj.address = await getAddressFromCoordinates(obj.location?.coordinates)
-  //     obj.location = undefined;
-  //     obj.destination = undefined;
-
-  //     return obj;
-  //   })
-  // );
-  // // Replace results with customRes for the response
-  // results.splice(0, results.length, ...customRes);
-
-  // sendResponse(res, { code: StatusCodes.OK, message: 'Jobs retrieved successfully', data: results, pagination });
-});
-
-const getAllAToZ = catchAsync(async (req, res) => {
-  const { page = 1, limit = 10, sortField = 'createdAt', sortOrder = 'desc', status, } = req.query;
-  if (status && !JobStatus.includes(status as IJobStatus)) {
-    throw new ApiError(StatusCodes.BAD_REQUEST, 'Invalid Status');
-  }
-  const filters: any = {}; // Ensure we only get non-deleted jobs
-  if (status) filters.status = status;
-
-  const { results, pagination } = await paginate({
-    page: parseInt(page as string),
-    limit: parseInt(limit as string),
-    filters,
-    sortField: sortField as string,
-    sortOrder: sortOrder as string,
-    model: Job,
-    select: 'carModelId platform status createdAt isDeleted',
-    populate: [{ path: 'carModelId', select: 'name' }, { path: 'customerId', select: 'name' }],
-  });
-
-  sendResponse(res, { code: StatusCodes.OK, message: 'Jobs retrieved successfully', data: results, pagination });
-});
-
-const getAllProvider = catchAsync(async (req, res) => {
-  const { radius } = req.params;
-  if (!radius) {
-    return sendResponse(res, { code: StatusCodes.BAD_REQUEST, message: 'Radius is required' });
-  }
-
-  const coordinates = req.user?.location?.coordinates;
-  if (!coordinates) {
-    return sendResponse(res, { code: StatusCodes.BAD_REQUEST, message: 'Please turn on your location' });
-  }
-
-  const { page = 1, limit = 10, sortField = 'createdAt', sortOrder = 'desc' } = req.query;
-
-  let filters: any = { isDeleted: false, status: 'active' };
-  const earthRadiusInMiles = 3963.2;
-  filters.location = {
-    $geoWithin: {
-      $centerSphere: [coordinates, Number(radius) / earthRadiusInMiles], // Convert radius to radians
-    },
-  };
-  filters.targets = { $in: [req.user.userId] }; // Only where current provider is present in targets
-
-  const { results, pagination } = await paginate({
-    page: parseInt(page as string),
-    limit: parseInt(limit as string),
-    filters,
-    sortField: sortField as string,
-    sortOrder: sortOrder as string,
-    model: Job,
-    select: 'customerId carModelId platform createdAt location destination',
-    populate: [
-      { path: 'customerId', select: 'name profileImage' },
-      { path: 'carModelId', select: 'name' },
-    ],
-  });
-
-
-  const results2 = results.map((item: any) => {
-    const distance = getDistanceInMiles(item.location.coordinates, item.destination.coordinates);
-    const obj = item.toObject();
-    if(distance) obj.distance = distance;
-    return obj;
-  })
-
-  sendResponse(res, { code: StatusCodes.OK, message: 'Jobs retrieved successfully', data: results2, pagination });
-});
-
-
-// get a job by ID and where isDeleted is false
-const getById = catchAsync(async (req, res) => {
-  const { id } = req.params; // Extract job ID from params
-
-  // Find the job by ID and check if it's not deleted
-  const result = await Job.findOne({
-    _id: id,
-    isDeleted: false,
-    status: 'active',
-  })
-    .populate('carModelId') // This fetches the associated CarModel
-    .populate('customerId') // Optional: also fetch customer details
-    .select('-isDeleted -status') // Exclude isDeleted and status fields from the result
-    .exec();
-
-  if (!result) {
-    return sendResponse(res, {
-      code: StatusCodes.NOT_FOUND,
-      message: 'Job not found',
-    });
-  }
-
-  sendResponse(res, {
-    code: StatusCodes.OK,
-    message: 'Job retrieved successfully',
-    data: result,
-  });
-});
+import TowTruck from '../tow truck/tow truck.model';
+import { UserService } from '../user/user.service';
+import ITowType from '../tow type/tow type.interface';
+import Promo from '../promo/promo.model';
+import Transaction from '../payment/transaction/transaction.model';
 
 // create a new job
 const create = catchAsync(async (req, res) => {
@@ -168,8 +22,8 @@ const create = catchAsync(async (req, res) => {
     throw new ApiError(StatusCodes.UNAUTHORIZED, 'Unauthorized access.');
   }
 
-  const payload = req.body;
-  payload.customerId = auth.userId;
+  const payload : IJob = req.body;
+  payload.userId = auth.userId;
   let { coordinates, destCoordinates } = req.body;
 
   if (!coordinates) {
@@ -180,13 +34,13 @@ const create = catchAsync(async (req, res) => {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Please turn on your location');
   }
 
-  payload.location = {
+  payload.fromLocation = {
     type: 'Point',
     coordinates, // [longitude, latitude]
   };
 
   if (destCoordinates) {
-    payload.destination = {
+    payload.toLocation = {
       type: 'Point',
       coordinates: destCoordinates, // [longitude, latitude]
     };
@@ -199,67 +53,119 @@ const create = catchAsync(async (req, res) => {
   }
 
   sendResponse(res, { code: StatusCodes.CREATED, message: 'Job created successfully', data: result, });
-
-  // make notifications
-  result.targets.forEach(target => {
-    NotificationService.addNotification({ receiverId: target, title: 'New job!', message: 'A customer targets you.' });
-  });
 });
 
-// update an existing job by ID
-const update = catchAsync(async (req, res) => {
-  const { id } = req.params; // Extract job ID from params
-  const payload = req.body;
+// book provider & init transaction
+const book = catchAsync(async (req, res) => {
+  const auth = req.user;
 
-  // Find the job by ID and update it
-  const result = await Job.findOneAndUpdate(
-    { _id: id, customerId: req.user.userId },
-    payload,
-    { new: true }
-  )
-    .populate('carModelId') // This fetches the associated CarModel
-    .populate('customerId'); // Optional: also fetch customer details
-
-  if (!result) {
-    return sendResponse(res, {
-      code: StatusCodes.NOT_FOUND,
-      message: 'Job not found',
-    });
+  if (!auth) {
+    throw new ApiError(StatusCodes.UNAUTHORIZED, 'Unauthorized access.');
   }
 
-  sendResponse(res, {
-    code: StatusCodes.OK,
-    message: 'Job updated successfully',
-    data: result,
+  const {jobId, providerId, promoId} = req.body;
+
+  const [providerU, towTruck] = await Promise.all([
+    UserService.getSingleUser(providerId),
+    TowTruck.findOne({ userId: providerId }).populate('towTypeId').lean()
+  ]);
+
+  if (!providerU || !towTruck?.towTypeId) {
+    throw new ApiError(StatusCodes.NOT_FOUND, 'Provider not found or He didn\'t set tow type yet.');
+  }
+
+  // set this provider on job
+  const job = await Job.findOneAndUpdate(
+    {_id: jobId, status: 'created', providerId: null, userId: auth.userId}, 
+    { providerId, status: 'requested' as IJobStatus }, 
+    { new: true }
+  ) 
+  || (() => { throw new ApiError(StatusCodes.NOT_FOUND, 'Job not found or already booked'); })();
+
+
+  // calculate the price
+  const { baseFare, perKM, charge } = towTruck.towTypeId as Partial<ITowType>;
+  const promo = await Promo.findOne({
+    _id: promoId,
+    users: { $ne: auth.userId },
+    expireDate: { $gte: new Date() }, // Only fetch if not expired
+    status: 'active' // (optional) to ensure it's usable
   });
+  if(!promo || !baseFare || !perKM || !charge) throw new ApiError(StatusCodes.NOT_FOUND, 'Prices or promo not found');
+
+  const orderAmount = baseFare + perKM * job.distance;
+  const discount = promo.type === 'percent' ? orderAmount * (promo.value / 100) : promo.value;
+  
+  const finalAmount = orderAmount - discount + charge;
+
+  // create transaction but not pay now
+  await Transaction.create({
+    userId: auth.userId,
+    providerId,
+    jobId,
+    amount: orderAmount,
+    discount,
+    charge,
+    finalAmount,
+    status: 'created'
+  })
+  || (() => { throw new ApiError(StatusCodes.NOT_FOUND, 'Transaction creation error'); })();
+
+
+
+  sendResponse(res, { code: StatusCodes.CREATED, message: 'Job created successfully', data: 0, });
 });
 
-// delete a job by ID
-const trash = catchAsync(async (req, res) => {
-  const { id } = req.params; // Extract job ID from params
+const cancelTrip = catchAsync(async (req, res) => {
+  const auth = req.user;
 
-  // Find and update status
-  const result = await Job.findOneAndUpdate(
-    { _id: id, customerId: req.user.userId },
-    { isDeleted: true },
+  if (!auth) {
+    throw new ApiError(StatusCodes.UNAUTHORIZED, 'Unauthorized access.');
+  }
+
+  const {id} = req.params;
+
+  // set
+  const job = await Job.findOneAndUpdate(
+    { _id: id, status: { $in: ['requested', 'accepted'] }, userId: auth.userId }, // Fixed $in syntax
+    { providerId: null, status: 'created' as IJobStatus },
     { new: true }
   )
-    .populate('carModelId') // This fetches the associated CarModel
-    .populate('customerId'); // Optional: also fetch customer details
+  || (() => { throw new ApiError(StatusCodes.NOT_FOUND, 'Job not found or already in progress'); })();
 
-  sendResponse(res, {
-    code: StatusCodes.OK,
-    message: 'Job deleted successfully',
-    data: result,
-  });
+  // make notification
+  await NotificationService.addNotification({receiverId: job.providerId, title: 'Trip canceled', message: `${auth.name} have canceled the trip`});
+
+  sendResponse(res, { code: StatusCodes.CREATED, message: 'Job created successfully', data: 0, });
 });
 
+const acceptTrip = catchAsync(async (req, res) => {
+  const auth = req.user;
+
+  if (!auth) {
+    throw new ApiError(StatusCodes.UNAUTHORIZED, 'Unauthorized access.');
+  }
+
+  const {id} = req.params;
+
+  // set
+  const job = await Job.findOneAndUpdate(
+    { _id: id, status: 'requested', providerId: auth.userId }, // Fixed $in syntax
+    { providerId: null, status: 'accepted' as IJobStatus },
+    { new: true }
+  )
+  || (() => { throw new ApiError(StatusCodes.NOT_FOUND, 'Job not found or already in progress'); })();
+
+  // make notification
+  await NotificationService.addNotification({receiverId: job.userId, title: 'Trip accepted', message: `Provider have accepted the trip`});
+
+  sendResponse(res, { code: StatusCodes.CREATED, message: 'Job created successfully', data: 0, });
+});
+
+
 export const jobController = {
-  getAllForCustomer,
-  getAllAToZ,
-  getAllProvider,
-  getById,
   create,
-  update,
-  trash,
+  book,
+  cancelTrip,
+  acceptTrip,
 };

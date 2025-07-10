@@ -2,16 +2,13 @@ import { Router } from 'express';
 import auth from '../../middlewares/auth';
 import { jobController } from './jobs.controller';
 import validateRequest from '../../shared/validateRequest';
-import { validCreate, validCreateTT, validUpdate } from './jobs.validation';
+import { validBook, validCreate } from './jobs.validation';
 
 const router = Router();
-router.get('/', auth('customer'), jobController.getAllForCustomer); // access all for 
-router.get('/admin', auth('admin'), jobController.getAllAToZ); // access all jobs A-Z
-router.get('/provider/:radius', auth('provider'), jobController.getAllProvider); // access all jobs for tow truck
-router.get('/:id', auth('common'), jobController.getById); // access single
-router.post('/', auth('customer'), validateRequest(validCreate), jobController.create); // post a job
-router.post('/tow_truck', auth('customer'), validateRequest(validCreateTT), jobController.create); // post a job
-router.put('/:id', auth('customer'), validateRequest(validUpdate), jobController.update); // update
-router.delete('/:id', auth('customer'), jobController.trash); // delete
+
+router.post('/', auth(['user', 'provider']), validateRequest(validCreate), jobController.create); // post a job
+router.post('/book', auth(['user', 'provider']), validateRequest(validBook), jobController.book); // book a tow truck
+router.post('/accept/:id', auth('provider'), jobController.acceptTrip); // book a tow truck
+router.post('/cancel/:id', auth(['user', 'provider']), jobController.cancelTrip); // book a tow truck
 
 export const JobRoutes = router;

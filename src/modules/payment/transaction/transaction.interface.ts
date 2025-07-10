@@ -1,19 +1,17 @@
 import { Types } from 'mongoose';
 
-export type ITransactionType = 'transport' | 'service';
-export const TransactionType: ITransactionType[] = ['transport', 'service'];
-
-export type ITransactionStatus = 'created' | 'success' | 'failed' | 'refunded';
-export const TransactionStatus: ITransactionStatus[] = ['created', 'success', 'failed', 'refunded'];
+export type ITransactionStatus = 'created' | 'sent' | 'received' | 'refunded';
+export const TransactionStatus: ITransactionStatus[] = ['created', 'sent', 'received', 'refunded'];
 
 interface ITransaction {
-  customerId: Types.ObjectId;
+  userId: Types.ObjectId;
   providerId: Types.ObjectId;
-  jobProcessId: Types.ObjectId;
-  type: ITransactionType,
+  jobId: Types.ObjectId;
   amount: number,
+  charge: number,
+  discount: number,
+  finalAmount: number,
   isRefundRequested: boolean,
-  refundImages: string[],
   refundDetails: string,
   status: ITransactionStatus,
 }

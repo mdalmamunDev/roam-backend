@@ -1,15 +1,9 @@
 import { z } from "zod";
-import { UserPlatform } from "../modules/user/user.constant";
 
 export const objectId = z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid ObjectId format.');
 
 // Reusable validation for phone numbers
 export const phoneValidation = z.string();
-
-// Common experience platform validation
-export const platformValidation = z.enum(UserPlatform as [string, ...string[]], {
-    errorMap: () => ({ message: `Platform must be one of [${UserPlatform.join(', ')}].` }),
-});
 
 // Common date validation
 export const dateValidation = z.string().

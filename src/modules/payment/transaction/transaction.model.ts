@@ -1,9 +1,9 @@
 import mongoose, { Schema } from 'mongoose';
-import ITransaction, { TransactionStatus, TransactionType } from './transaction.interface';
+import ITransaction, { TransactionStatus } from './transaction.interface';
 
 const schema = new Schema<ITransaction>(
   {
-    customerId: {
+    userId: {
       type: Schema.Types.ObjectId,
       ref: 'User',  // This will reference the 'User' model
       required: [true, 'Customer ID is required.'],
@@ -13,26 +13,30 @@ const schema = new Schema<ITransaction>(
       ref: 'User',  // This will reference the 'User' model
       required: [true, 'Provider ID is required.'],
     },
-    jobProcessId: {
+    jobId: {
       type: Schema.Types.ObjectId,
       ref: 'Job',  // This will reference the 'Job' model
       required: [true, 'Job ID is required.'],
-    },
-    type: {
-      type: String,
-      enum: TransactionType,  // Only allows 'transport' or 'service'
-      required: [true, 'Transaction type is required.'],
     },
     amount: {
       type: Number,
       required: [true, 'Amount is required.'],
     },
+    discount: {
+      type: Number,
+      default: 0,
+    },
+    charge: {
+      type: Number,
+      default: 0,
+    },
+    finalAmount: {
+      type: Number,
+      required: [true, 'Final amount is required.'],
+    },
     isRefundRequested: {
       type: Boolean,
       default: false,  // Default to false, indicating no refund request
-    },
-    refundImages: {
-      type: [String],
     },
     refundDetails: {
       type: String

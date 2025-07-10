@@ -1,31 +1,23 @@
 import { z } from 'zod';
-import { JobStatus } from './jobs.interface';
-import { coordinatesValidation, dateValidation, objectId, platformValidation } from '../../helpers/zValidationUtil';
+import {JobIssues, JobStatus, JobVehicles } from './jobs.interface';
+import { coordinatesValidation, objectId } from '../../helpers/zValidationUtil';
 
-
-// Define GeoLocation Validation
-const time = z.string().optional();
-const date = dateValidation.optional();
-
-// ObjectId validation (for customerId, carModelId, targets)
-
-// targets
-const targets = z.array(objectId).nonempty('At least one target is required.');
-
-// Job status validation (one of 'active', 'process', 'completed', 'blocked')
-const status = z.enum(JobStatus as [string, ...string[]], {
-  errorMap: () => ({ message: `Status must be one of [${JobStatus.join(', ')}].` }),
-});
+const userId = objectId;
+const providerId = objectId.optional();
+const vehicle = z.enum(JobVehicles as [string]);
+const issue = z.enum(JobIssues as [string]);
+const note = z.string().optional();
+const distance = z.number().min(0);
+const status = z.enum(JobStatus as [string]);
 
 // Validation schema for IJob
 export const JobValidation = {
-  customerId: objectId,
-  carModelId: objectId,
-  platform: platformValidation,
-  targets,
-  time,
-  date,
-  isDeleted: z.boolean(),
+  userId,
+  providerId,
+  vehicle,
+  issue,
+  note,
+  distance,
   status,
 };
 
@@ -34,27 +26,19 @@ export default JobValidation;
 
 export const validCreate = z.object({
   body: z.object({
-    platform: platformValidation,
-    targets,
-    coordinates: coordinatesValidation.optional(),
-    time,
-    date,
-    carModelId: objectId,
-  }).strict(),
-});
-export const validCreateTT = z.object({
-  body: z.object({
-    targets,
-    coordinates: coordinatesValidation.optional(),
+    vehicle,
+    issue,
+    note,
+    coordinates: coordinatesValidation,
     destCoordinates: coordinatesValidation,
+    distance
   }).strict(),
 });
 
-export const validUpdate = z.object({
+export const validBook = z.object({
   body: z.object({
-    platform: platformValidation.optional(),
-    targets: targets.optional(),
-    carModelId: objectId.optional(),
-    status: status.optional(),
+    jobId: objectId,
+    providerId: objectId, // required
+    promoId: objectId,
   }).strict(),
 });

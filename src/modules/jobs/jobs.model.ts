@@ -1,41 +1,32 @@
 import mongoose, { Schema } from 'mongoose';
-import IJob, { JobStatus } from './jobs.interface';
-import { UserPlatform, UserRole } from '../user/user.constant';
+import IJob, { JobIssues, JobStatus, JobVehicles } from './jobs.interface';
 
-const schema = new Schema<IJob>(
+const jobSchema = new Schema<IJob>(
   {
-    customerId: {
+    userId: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
+      required: true
     },
-    carModelId: {
+    providerId: {
       type: Schema.Types.ObjectId,
-      ref: 'Car Model',
+      ref: 'User',
     },
-    platform: {
+    vehicle: {
       type: String,
-      enum: UserPlatform,
+      enum: JobVehicles,
+      required: true
     },
-    targets: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        default: [],
-      },
-    ],
-    location: {
-      type: {
-        type: String,
-        enum: ['Point'],
-        default: 'Point',
-      },
-      coordinates: {
-        type: [Number], // [longitude, latitude]
-        required: true,
-      },
+    issue: {
+      type: String,
+      enum: JobIssues,
+      required: true
     },
-    destination: {
+    note: {
+      type: String,
+      default: ''
+    },
+    fromLocation: {
       type: {
         type: String,
         enum: ['Point'],
@@ -46,22 +37,31 @@ const schema = new Schema<IJob>(
         required: true,
       },
     },
-    date: String,
-    time: String,
-    isDeleted: {
-      type: Boolean,
-      default: false,
+    toLocation: {
+      type: {
+        type: String,
+        enum: ['Point'],
+        default: 'Point'
+      },
+      coordinates: {
+        type: [Number], // [longitude, latitude]
+        required: true,
+      },
+    },
+    distance: {
+      type: Number,
+      default: 0
     },
     status: {
       type: String,
       enum: JobStatus,
-      default: 'active',
-    },
+      default: 'created'
+    }
   },
   {
-    timestamps: true,
+    timestamps: true
   }
 );
 
-const Job = mongoose.model<IJob>('Job', schema);
+const Job = mongoose.model<IJob>('Job', jobSchema);
 export default Job;

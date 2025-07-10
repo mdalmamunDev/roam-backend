@@ -1,20 +1,25 @@
 import { Types } from 'mongoose';
-import { TGeoLocation, TUserPlatform } from '../user/user.constant';
+import { TGeoLocation } from '../user/user.constant';
 
-export type IJobStatus = 'active' | 'process' | 'completed';
-export const JobStatus: IJobStatus[] = ['active', 'process', 'completed'];
+export type IJobStatus = 'created' | 'requested' | 'accepted' | 'paid' | 'completed';
+export const JobStatus: IJobStatus[] = ['created', 'requested', 'accepted', 'paid', 'completed'];
+
+export type IJobVehicle = 'motor-bike' | 'car' | 'jeep' | 'close_truck' | 'open_truck' | 'other';
+export const JobVehicles: IJobVehicle[] = ['motor-bike', 'car', 'jeep', 'close_truck', 'open_truck', 'other'];
+
+export type IJobIssue = 'emergency' | 'jump_start' | 'flat_tire' | 'out_of_fuel' | 'recovery' | 'lockout' | 'other';
+export const JobIssues: IJobIssue[] = ['emergency', 'jump_start', 'flat_tire', 'out_of_fuel', 'recovery', 'lockout', 'other'];
 
 interface IJob {
-  customerId: Types.ObjectId;
-  carModelId: Types.ObjectId;
-  platform: TUserPlatform;
-  targets: Types.ObjectId[];
-  location: TGeoLocation;
-  destination: TGeoLocation; // for tow trucking
-  time: string; // for in shope
-  date: string; // for in shope
-  isDeleted: boolean;
-  status: IJobStatus;
+  userId: Types.ObjectId;
+  providerId?: Types.ObjectId;
+  vehicle: IJobVehicle,
+  issue: IJobIssue,
+  note?: string,
+  fromLocation: TGeoLocation;
+  toLocation: TGeoLocation; // for tow trucking
+  distance: number,
+  status: IJobStatus,
 }
 
 export default IJob;

@@ -9,6 +9,8 @@ import { NotificationService } from "../notification/notification.services";
 import { BalanceService } from "../balance/balance.service";
 import Transaction from "./transaction/transaction.model";
 import { ITransactionStatus } from "./transaction/transaction.interface";
+import Job from "../jobs/jobs.model";
+import { IJobStatus } from "../jobs/jobs.interface";
 
 class Controller {
   // Handle Stripe webhook events
@@ -169,7 +171,7 @@ class Controller {
       throw new ApiError(StatusCodes.NOT_FOUND, 'Transaction not found or it\'s not requested yet.');
     }
 
-    const customer = await User.findById(transaction.customerId);
+    const customer = await User.findById(transaction.userId);
     if (!customer) {
       throw new ApiError(StatusCodes.NOT_FOUND, 'Customer not found');
     }
@@ -198,7 +200,7 @@ class Controller {
       ]);
     } else {
       // cancel the refund request and transfer the amount back to the provider
-      transaction.status = 'success';
+      transaction.status = 'received';
       transaction.isRefundRequested = false;
       const provider = await User.findById(transaction.providerId);
       if (provider) {
@@ -218,35 +220,47 @@ class Controller {
     sendResponse(res, { code: StatusCodes.OK, message: "Refund has been successfully processed." });
   });
 
+  sendToProvider = catchAsync(async (req, res) => {
+    const { transactionId } = req.params;
+    const transaction = await Transaction.findOneAndUpdate({_id: transactionId, status: 'created' as ITransactionStatus, userId: req.user?.userId}, {status: 'sent' as ITransactionStatus});
+    if (!transaction) throw new ApiError(StatusCodes.NOT_FOUND, 'Transaction not found or it\'s not possible yet.');
+
+    // cut the amount from user wallet
+    await Promise.all([
+      User.findByIdAndUpdate(transaction.userId, { $inc: { wallet: -transaction.finalAmount } }),
+      Job.findByIdAndUpdate(transaction.jobId, {status: 'paid' as IJobStatus}),
+      BalanceService.addChargeBalance(transaction.charge - transaction.discount)
+    ]);
+
+    sendResponse(res, { code: StatusCodes.OK, message: "Send to provider successful." });
+  });
+
   transferToProvider = catchAsync(async (req, res) => {
     const { transactionId } = req.params;
-    if (!transactionId) {
-      throw new ApiError(StatusCodes.BAD_REQUEST, 'Transaction id isn\'t valid')
-    }
-
-    const transaction = await Transaction.findOne({ _id: transactionId, status: 'created', isRefundRequested: false });
-    if (!transaction) {
-      throw new ApiError(StatusCodes.NOT_FOUND, 'Transaction not found or it\'s not possible yet.');
-    }
+    const transaction = await Transaction.findOne({ _id: transactionId, status: 'sent' as ITransactionStatus, isRefundRequested: false, userId: req.user?.userId });
+    if (!transaction) throw new ApiError(StatusCodes.NOT_FOUND, 'Transaction not found or it\'s not possible yet.');
 
     // Transfer the amount to the provider's wallet
     const provider = await User.findById(transaction.providerId);
-    if (!provider) {
-      throw new ApiError(StatusCodes.NOT_FOUND, 'Provider not found');
-    }
+    if (!provider) throw new ApiError(StatusCodes.NOT_FOUND, 'Provider not found');
+    
 
     provider.wallet += transaction.amount;
-    transaction.status = 'success';
+    transaction.status = 'received';
     await Promise.all([
       provider.save(),
-      transaction.save()
+      transaction.save(),
+      Job.findByIdAndUpdate(transaction.jobId, {status: 'completed' as IJobStatus}),
     ]);
 
-    sendResponse(res, { code: StatusCodes.OK, message: "Transfer to provider completed successfully." });
+    sendResponse(res, { code: StatusCodes.OK, message: "Transfer to provider successful." });
+
+    // make notification
+    await NotificationService.addNotification({receiverId: transaction.providerId, title: "Mony received", message: `Your have received ${transaction.amount}`})
   });
 
   retSuccessRes = catchAsync(async (req, res) => {
-    sendResponse(res, { code: StatusCodes.OK, message: "Payment successfully." });
+    sendResponse(res, { code: StatusCodes.OK, message: "Payment successful." });
   });
   retCancelRes = catchAsync(async (req, res) => {
     sendResponse(res, { code: StatusCodes.GATEWAY_TIMEOUT, message: "Payment canceled." });
