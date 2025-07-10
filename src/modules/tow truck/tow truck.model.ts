@@ -18,10 +18,6 @@ const towTruckSchema = new Schema<ITowTruck>(
       type: String,
       required: true,
     },
-    dateOfBirth: {
-      type: String,
-      required: true,
-    },
     gender: {
       type: String,
       enum: Gender,

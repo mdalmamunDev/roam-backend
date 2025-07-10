@@ -11,6 +11,7 @@ import { PaymentRoutes } from '../modules/payment/payment.routes';
 import { TowTruckRoutes } from '../modules/tow truck/tow truck.routes';
 import { DashboardRoutes } from '../modules/dashboard/dashboard.routes';
 import { BalanceRoutes } from '../modules/balance/balance.routes';
+import { TowTypesRoutes } from '../modules/tow type/tow type.routes';
 const router = express.Router();
 
 const apiRoutes = [
@@ -25,6 +26,10 @@ const apiRoutes = [
   {
     path: '/tow-truck',
     route: TowTruckRoutes,
+  },
+  {
+    path: '/tow-type',
+    route: TowTypesRoutes,
   },
   {
     path: '/job',

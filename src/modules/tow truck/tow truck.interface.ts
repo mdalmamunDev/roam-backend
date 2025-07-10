@@ -5,7 +5,6 @@ interface ITowTruck {
   userId: Types.ObjectId;
   towTypeId: Types.ObjectId;
   companyName: string;
-  dateOfBirth: string;
   gender: TGender;
   description: string;
   nidNo : string;

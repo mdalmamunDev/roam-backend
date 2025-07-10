@@ -1,13 +1,14 @@
 import { BalanceService } from "../modules/balance/balance.service";
 import SettingSeeder from "../modules/settings/settings.seeder";
+import TowTypeSeeder from "../modules/tow type/tow type.seeder";
 import { User } from "../modules/user/user.model";
 
 const adminSeeder = async () => {
-    const existingUser = await User.findOne({ email: 'bryman00008@gmail.com' });
+    const existingUser = await User.findOne({ email: 'mamun@gmail.com' });
     if (!existingUser) {
         await User.create({
             name: 'Mr. Admin',
-            email: 'bryman00008@gmail.com',
+            email: 'mamun@gmail.com',
             phone: '0123456789',
             address: 'New York',
             role: 'admin',
@@ -33,6 +34,7 @@ const DbSeeder = async () => {
             adminSeeder(),
             SettingSeeder(),
             balanceSeeder(),
+            TowTypeSeeder(),
         ]);
     } catch (error) {
         console.error('Error seeding:', error);
