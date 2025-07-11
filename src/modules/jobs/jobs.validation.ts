@@ -39,6 +39,6 @@ export const validBook = z.object({
   body: z.object({
     jobId: objectId,
     providerId: objectId, // required
-    promoId: objectId,
+    promoCode: z.string().optional(),
   }).strict(),
 });

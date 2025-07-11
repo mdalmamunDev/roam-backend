@@ -9,6 +9,7 @@ export const PromoStatus: IPromoStatus[] = ['active', 'inactive'];
 interface IPromo {
   _id: Types.ObjectId;
   users: [Types.ObjectId];
+  code: string,
   type: IPromoType;
   value: number;
   expireDate: Date;

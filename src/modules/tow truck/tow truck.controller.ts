@@ -61,6 +61,7 @@ class Controller {
         );
 
         return {
+          _id: u._id,
           name: u.name,
           companyName: p.companyName,
           carImage: p.carImage,

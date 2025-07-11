@@ -11,8 +11,9 @@ export type IJobIssue = 'emergency' | 'jump_start' | 'flat_tire' | 'out_of_fuel'
 export const JobIssues: IJobIssue[] = ['emergency', 'jump_start', 'flat_tire', 'out_of_fuel', 'recovery', 'lockout', 'other'];
 
 interface IJob {
-  userId: Types.ObjectId;
-  providerId?: Types.ObjectId;
+  _id: Types.ObjectId,
+  userId: Types.ObjectId,
+  providerId?: Types.ObjectId,
   vehicle: IJobVehicle,
   issue: IJobIssue,
   note?: string,

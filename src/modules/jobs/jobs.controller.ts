@@ -4,14 +4,78 @@ import sendResponse from '../../shared/sendResponse';
 import Job from './jobs.model';
 import { NotificationService } from '../notification/notification.services';
 import ApiError from '../../errors/ApiError';
-import paginate from '../../helpers/paginationHelper';
-import IJob, { IJobStatus, JobStatus } from './jobs.interface';
-import { User } from '../user/user.model';
-import TowTruck from '../tow truck/tow truck.model';
-import { UserService } from '../user/user.service';
-import ITowType from '../tow type/tow type.interface';
-import Promo from '../promo/promo.model';
+import IJob, { IJobStatus } from './jobs.interface';
 import Transaction from '../payment/transaction/transaction.model';
+import { TowTruckService } from '../tow truck/tow truck.service';
+import { getAddressFromCoordinates } from '../../helpers/globalHelper';
+import { PromoService } from '../promo/promo.service';
+import { TowTypeService } from '../tow type/tow type.service';
+import { startSession } from 'mongoose';
+import paginate from '../../helpers/paginationHelper';
+
+// get on going trips
+const getOnGoingForUser = catchAsync(async (req, res) => {
+  const { page = 1, limit = 10, sortField = 'updatedAt', sortOrder = 'desc'} = req.query;
+
+  const { results, pagination } = await paginate({
+    page: parseInt(page as string),
+    limit: parseInt(limit as string),
+    filters: {
+      userId: req.user?.userId,
+      status: { $ne: 'completed' }, // Fetch jobs not completed
+    },
+    sortField: sortField as string,
+    sortOrder: sortOrder as string,
+    model: Job,
+  });
+
+  const resResult = await Promise.all(
+    results.map(async (j: IJob) => {
+      const { name: providerName, companyName, description, carImage } = await TowTruckService.getValidProvider(j.providerId || '');
+
+      const [fromAddress, toAddress] = await Promise.all([
+        getAddressFromCoordinates(j.fromLocation?.coordinates),
+        getAddressFromCoordinates(j.toLocation?.coordinates),
+      ]);
+
+      return { jobId: j._id, providerName, companyName, description, fromAddress, toAddress, carImage };
+    })
+  );
+
+  sendResponse(res, { code: StatusCodes.OK, data: resResult, pagination });
+});
+
+// get on going trips
+const getHistoryForUser = catchAsync(async (req, res) => {
+   const { page = 1, limit = 10, sortField = 'updatedAt', sortOrder = 'desc'} = req.query;
+
+  const { results, pagination } = await paginate({
+    page: parseInt(page as string),
+    limit: parseInt(limit as string),
+    filters: {
+      userId: req.user?.userId,
+      status: { $ne: 'completed' }, // Fetch jobs not completed
+    },
+    sortField: sortField as string,
+    sortOrder: sortOrder as string,
+    model: Job,
+  });
+
+  const resResult = await Promise.all(
+    results.map(async (j: IJob) => {
+      const { name: providerName, companyName, description, driverImage } = await TowTruckService.getValidProvider(j.providerId || '');
+
+      const [fromAddress, toAddress] = await Promise.all([
+        getAddressFromCoordinates(j.fromLocation?.coordinates),
+        getAddressFromCoordinates(j.toLocation?.coordinates),
+      ]);
+
+      return { jobId: j._id, providerId: j.providerId, providerName, companyName, description, fromAddress, toAddress, driverImage, rating: 4.5}; // TODO: rating what i give him
+    })
+  );
+
+  sendResponse(res, { code: StatusCodes.OK, data: resResult, pagination });
+});
 
 // create a new job
 const create = catchAsync(async (req, res) => {
@@ -48,10 +112,64 @@ const create = catchAsync(async (req, res) => {
   const result = await Job.create(payload);
 
   if (!result) {
-    return sendResponse(res, { code: StatusCodes.BAD_REQUEST, message: 'Failed to create job', });
+    return sendResponse(res, { code: StatusCodes.BAD_REQUEST, message: 'Failed to create trip', });
   }
 
-  sendResponse(res, { code: StatusCodes.CREATED, message: 'Job created successfully', data: result, });
+  sendResponse(res, { code: StatusCodes.CREATED, message: 'Trip created successfully', data: result, });
+});
+
+const detailsPre = catchAsync(async (req, res) => {
+  const {jobId, providerId} = req.params;
+
+  const job = await Job.findOne({_id: jobId, userId: req.user?.userId}).lean();
+  if (!job) return sendResponse(res, { code: StatusCodes.UNAUTHORIZED, message: 'Trip not found or unauthorized access' });
+  
+  const provider = await TowTruckService.getValidProviderOrThrow(providerId);
+  
+  const [fromAddress, toAddress, promos] = await Promise.all([
+    getAddressFromCoordinates(job.fromLocation?.coordinates),
+    getAddressFromCoordinates(job.toLocation?.coordinates),
+    PromoService.getValidPromosByUser(req.user?.userId),
+  ]);
+
+
+  let amount, charge, discount, finalAmount;
+  const transaction = await Transaction.findOne({ jobId: job._id });
+  if (transaction) {
+    amount = transaction.amount;
+    charge = transaction.charge;
+    discount = transaction.discount;
+    finalAmount = transaction.finalAmount;
+  } else {
+    ({ amount, charge, discount, finalAmount } = await TowTypeService.calculatePrices(
+      provider.towTypeId,
+      job.distance,
+      '',
+      req.user?.userId
+    ));
+  }
+
+  const resResult = {
+    jobId: job._id,
+    providerId: provider.userId,
+    providerName: provider.name,
+    companyName: provider.companyName,
+    towType: provider.towTypeId?.name,
+    description: provider.description,
+    rating: 4.5, // TODO
+    trips: 121,  // TODO
+    isVerified: provider.isVerified,
+    fromAddress,
+    toAddress,
+    promos,
+    distance: job.distance,
+    amount,
+    charge,
+    discount,
+    finalAmount,
+  };
+
+  sendResponse(res, { code: StatusCodes.OK, data: resResult });
 });
 
 // book provider & init transaction
@@ -62,64 +180,81 @@ const book = catchAsync(async (req, res) => {
     throw new ApiError(StatusCodes.UNAUTHORIZED, 'Unauthorized access.');
   }
 
-  const {jobId, providerId, promoId} = req.body;
+  const { jobId, providerId, promoCode } = req.body;
 
-  const [providerU, towTruck] = await Promise.all([
-    UserService.getSingleUser(providerId),
-    TowTruck.findOne({ userId: providerId }).populate('towTypeId').lean()
-  ]);
+  const session = await startSession();
+  session.startTransaction();
 
-  if (!providerU || !towTruck?.towTypeId) {
-    throw new ApiError(StatusCodes.NOT_FOUND, 'Provider not found or He didn\'t set tow type yet.');
+  try {
+    const towTruck = await TowTruckService.getValidProviderOrThrow(providerId);
+
+    // Set provider on job
+    const job = await Job.findOneAndUpdate(
+      {
+        _id: jobId,
+        status: 'created',
+        providerId: null,
+        userId: auth.userId,
+      },
+      {
+        providerId,
+        status: 'requested' as IJobStatus,
+      },
+      {
+        new: true,
+        session,
+      }
+    );
+
+    if (!job) {
+      throw new ApiError(StatusCodes.NOT_FOUND, 'Trip not found or already booked');
+    }
+
+    // Calculate prices
+    const { amount, charge, discount, finalAmount } =
+      await TowTypeService.calculatePrices(
+        towTruck.towTypeId,
+        job.distance,
+        promoCode,
+        auth.userId
+      );
+
+    // Create transaction
+    const tx = await Transaction.create(
+      [
+        {
+          userId: auth.userId,
+          providerId,
+          jobId,
+          amount,
+          discount,
+          charge,
+          finalAmount,
+          status: 'created',
+        },
+      ],
+      { session }
+    );
+
+    if (!tx?.length) {
+      throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, 'Transaction creation failed');
+    }
+
+    await session.commitTransaction();
+    session.endSession();
+
+    sendResponse(res, {
+      code: StatusCodes.CREATED,
+      message: 'Trip booked successfully',
+      data: tx[0], // or return job info if you prefer
+    });
+  } catch (err) {
+    await session.abortTransaction();
+    session.endSession();
+    throw err;
   }
-
-  // set this provider on job
-  const job = await Job.findOneAndUpdate(
-    {_id: jobId, status: 'created', providerId: null, userId: auth.userId}, 
-    { providerId, status: 'requested' as IJobStatus }, 
-    { new: true }
-  ) 
-  || (() => { throw new ApiError(StatusCodes.NOT_FOUND, 'Job not found or already booked'); })();
-
-
-  // calculate the price
-  const { baseFare, perKM, charge } = towTruck.towTypeId as Partial<ITowType>;
-  const promo = await Promo.findOneAndUpdate(
-    {
-      _id: promoId,
-      users: { $ne: auth.userId },
-      expireDate: { $gte: new Date() },
-      status: 'active'
-    },
-    {
-      $push: { users: auth.userId }
-    },
-    { new: true }
-  )
-  if(!promo || !baseFare || !perKM || !charge) throw new ApiError(StatusCodes.NOT_FOUND, 'Prices or promo not found');
-
-  const orderAmount = baseFare + perKM * job.distance;
-  const discount = promo.type === 'percent' ? orderAmount * (promo.value / 100) : promo.value;
-  
-  const finalAmount = orderAmount - discount + charge;
-
-  // create transaction but not pay now
-  await Transaction.create({
-    userId: auth.userId,
-    providerId,
-    jobId,
-    amount: orderAmount,
-    discount,
-    charge,
-    finalAmount,
-    status: 'created'
-  })
-  || (() => { throw new ApiError(StatusCodes.NOT_FOUND, 'Transaction creation error'); })();
-
-
-
-  sendResponse(res, { code: StatusCodes.CREATED, message: 'Job created successfully', data: 0, });
 });
+
 
 const cancelTrip = catchAsync(async (req, res) => {
   const auth = req.user;
@@ -164,12 +299,15 @@ const acceptTrip = catchAsync(async (req, res) => {
   // make notification
   await NotificationService.addNotification({receiverId: job.userId, title: 'Trip accepted', message: `Provider have accepted the trip`});
 
-  sendResponse(res, { code: StatusCodes.CREATED, message: 'Job created successfully', data: 0, });
+  sendResponse(res, { code: StatusCodes.CREATED, message: 'Trip accepted successfully' });
 });
 
 
 export const jobController = {
+  getOnGoingForUser,
+  getHistoryForUser,
   create,
+  detailsPre,
   book,
   cancelTrip,
   acceptTrip,

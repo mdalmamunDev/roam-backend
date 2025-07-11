@@ -8,6 +8,11 @@ const promoSchema = new Schema<IPromo>(
       ref: 'User',
       required: true
     }],
+    code: {
+      type: String,
+      unique: true,
+      required: true,
+    },
     type: {
       type: String,
       enum: PromoTypes,
