@@ -7,6 +7,9 @@ import createUploadMiddleware from '../../middlewares/upload';
 import passCustomData from '../../middlewares/passCustomData';
 
 const router = Router();
+
+router.get('/', auth(['user', 'provider']), TowTruckController.getNearByUser);
+
 router.post('/complete-profile',
     auth('provider'),
     validateRequest(ValidTT.completeProfile),

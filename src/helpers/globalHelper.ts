@@ -1,8 +1,8 @@
 import haversineDistance from "haversine-distance";
 
-export const getDistanceInMiles = (coordinates_a: [number, number], coordinates_b: [number, number]) : number => {
+export const getDistanceInKm = (coordinates_a: [number, number], coordinates_b: [number, number]) : number | null => {
     if(!coordinates_a || !coordinates_b || coordinates_a.length < 2 || coordinates_b.length < 2) {
-        return 0;
+        return null;
     }
 
     const distanceInMeters = haversineDistance(
@@ -10,7 +10,7 @@ export const getDistanceInMiles = (coordinates_a: [number, number], coordinates_
           { lat: coordinates_b[1], lng: coordinates_b[0] },
         );
     
-    return distanceInMeters / 1609.34;
+    return distanceInMeters / 1000;
 }
 
 

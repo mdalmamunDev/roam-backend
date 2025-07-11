@@ -9,7 +9,7 @@ const towTruckSchema = new Schema<ITowTruck>(
       ref: 'User',
       required: true,
     },
-    towTypeId: { // TODO: make model for this
+    towTypeId: {
       type: Schema.Types.ObjectId,
       ref: 'TowType',
       required: true,
@@ -59,6 +59,10 @@ const towTruckSchema = new Schema<ITowTruck>(
     carImage: {
       type: String,
     },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    }
   },
   {
     timestamps: true,

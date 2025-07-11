@@ -14,8 +14,8 @@ import { UserService } from '../user/user.service';
 import { formatDistanceToNow } from 'date-fns';
 
 const validateUserStatus = (user: TUser) => {
-  if (user.status === 'rejected') 
-    throw new ApiError(StatusCodes.BAD_REQUEST, 'Your account has been rejected. Please contact support');
+  if (user.status === 'inactive') 
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Your account has been inactivated. Please contact support');
 
   if (user.isDeleted) 
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Your account has been deleted. Please contact support');

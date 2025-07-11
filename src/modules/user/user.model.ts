@@ -73,7 +73,7 @@ const userSchema = new Schema<TUser, UserModal>(
         values: UserStatus,
         message: '{VALUE} is not a valid role',
       },
-      default: 'pending',
+      default: 'active',
     },
     isEmailVerified: {
       type: Boolean,

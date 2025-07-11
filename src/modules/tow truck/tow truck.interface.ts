@@ -18,6 +18,7 @@ interface ITowTruck {
   carRegistrationBack : string;
   driverImage : string;
   carImage : string;
+  isVerified: boolean,
   createdAt: Date;
   updatedAt: Date;
 }

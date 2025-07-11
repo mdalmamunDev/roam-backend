@@ -7,7 +7,6 @@ import ApiError from '../../errors/ApiError';
 import paginate from '../../helpers/paginationHelper';
 import IJob, { IJobStatus, JobStatus } from './jobs.interface';
 import { User } from '../user/user.model';
-import { getAddressFromCoordinates, getDistanceInMiles } from '../../helpers/globalHelper';
 import TowTruck from '../tow truck/tow truck.model';
 import { UserService } from '../user/user.service';
 import ITowType from '../tow type/tow type.interface';
@@ -85,12 +84,18 @@ const book = catchAsync(async (req, res) => {
 
   // calculate the price
   const { baseFare, perKM, charge } = towTruck.towTypeId as Partial<ITowType>;
-  const promo = await Promo.findOne({
-    _id: promoId,
-    users: { $ne: auth.userId },
-    expireDate: { $gte: new Date() }, // Only fetch if not expired
-    status: 'active' // (optional) to ensure it's usable
-  });
+  const promo = await Promo.findOneAndUpdate(
+    {
+      _id: promoId,
+      users: { $ne: auth.userId },
+      expireDate: { $gte: new Date() },
+      status: 'active'
+    },
+    {
+      $push: { users: auth.userId }
+    },
+    { new: true }
+  )
   if(!promo || !baseFare || !perKM || !charge) throw new ApiError(StatusCodes.NOT_FOUND, 'Prices or promo not found');
 
   const orderAmount = baseFare + perKM * job.distance;

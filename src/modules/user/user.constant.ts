@@ -1,8 +1,8 @@
 export type Role = 'admin' | 'user' | 'provider';
 export const UserRole: Role[] = ['admin', 'user', 'provider'];
 
-export type TUserStatus = 'verified' | 'rejected' | 'pending';
-export const UserStatus: TUserStatus[] = ['verified', 'rejected', 'pending'];
+export type TUserStatus = 'active' | 'inactive';
+export const UserStatus: TUserStatus[] = ['active', 'inactive'];
 
 export type TGender = 'male' | 'female' | 'other';
 export const Gender: TGender[] = ['male', 'female', 'other'];

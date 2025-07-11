@@ -12,6 +12,7 @@ const adminSeeder = async () => {
             phone: '0123456789',
             address: 'New York',
             role: 'admin',
+            status: "verified",
             isEmailVerified: true,
             password: "1qazxsw2"
         });
