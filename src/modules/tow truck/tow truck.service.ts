@@ -15,7 +15,7 @@ const getValidProviderOrThrow = async (userId: Types.ObjectId | string): Promise
   return {...user, ...tt}
 };
 
-const getValidProvider = async (userId: Types.ObjectId | string): Promise<any> => {
+const getValidProvider = async (userId: Types.ObjectId | string | undefined): Promise<any> => {
   const [user, tt] = await Promise.all([
     User.findOne({ _id: userId, status: 'active' as TUserStatus }).lean(),
     TowTruck.findOne({ userId, isVerified: true }).lean()

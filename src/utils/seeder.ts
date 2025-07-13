@@ -1,6 +1,9 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { User } from '../modules/user/user.model';
+import SettingSeeder from '../modules/settings/settings.seeder';
+import { BalanceService } from '../modules/balance/balance.service';
+import TowTypeSeeder from '../modules/tow type/tow type.seeder';
 // Load environment variables
 dotenv.config();
 
@@ -111,17 +114,6 @@ const dropDatabase = async () => {
   }
 };
 
-// Function to seed users
-const seedUsers = async () => {
-  try {
-    await User.deleteMany();
-    await User.insertMany(usersData);
-    console.log('Users seeded successfully!');
-  } catch (err) {
-    console.error('Error seeding users:', err);
-  }
-};
-
 // Connect to MongoDB
 const connectToDatabase = async () => {
   try {
@@ -136,12 +128,42 @@ const connectToDatabase = async () => {
   }
 };
 
+// Function to seed users
+const adminSeeder = async () => {
+  const existingUser = await User.findOne({ email: 'mamun@gmail.com' });
+  if (!existingUser) {
+    await User.create({
+      name: 'Mr. Admin',
+      email: 'mamun@gmail.com',
+      phone: '0123456789',
+      address: 'New York',
+      role: 'admin',
+      status: "verified",
+      isEmailVerified: true,
+      password: "1qazxsw2"
+    });
+    console.log('Admin user created');
+  } else {
+    console.log('Admin user already exists');
+  }
+}
+
+const balanceSeeder = async () => {
+    BalanceService.addAppBalance(0);
+    BalanceService.addChargeBalance(0);
+}
+
 // Main function to seed the database
 const seedDatabase = async () => {
   try {
     await connectToDatabase();
-    await dropDatabase();
-    await seedUsers();
+    // await dropDatabase();
+    await Promise.all([
+      adminSeeder(),
+      SettingSeeder(),
+      balanceSeeder(),
+      TowTypeSeeder(),
+    ]);
     console.log('--------------> Database seeding completed <--------------');
   } catch (err) {
     console.error('Error seeding database:', err);

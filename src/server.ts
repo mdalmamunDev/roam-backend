@@ -5,7 +5,6 @@ import app from './app';
 import { errorLogger, logger } from './shared/logger';
 import { socketHelper } from './helpers/socket';
 import { config } from './config';
-import DbSeeder from './seeders/DbSeeder';
 
 //uncaught exception
 process.on('uncaughtException', error => {
@@ -18,10 +17,6 @@ async function main() {
   try {
     await mongoose.connect(config.database.mongoUrl as string);
     logger.info(colors.green('🚀 Database connected successfully'));
-
-    // Run seeder after DB connected
-    await DbSeeder();
-    logger.info(colors.cyan('🌱 Database seeded successfully'));
 
     const port =
       typeof config.port === 'number' ? config.port : Number(config.port);
