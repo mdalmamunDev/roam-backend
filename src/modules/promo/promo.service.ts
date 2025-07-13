@@ -15,7 +15,7 @@ class Service {
     return promos;
   };
 
-  usePromo = async (code: string, userId: ObjectId | string, orderAmount: number): Promise<number> => {
+  usePromo = async (code: string, userId: ObjectId | string, orderAmount: number, session: any): Promise<number> => {
     if(!code || !userId) return 0;
 
     const promo = await Promo.findOneAndUpdate(
@@ -28,7 +28,7 @@ class Service {
       {
         $push: { users: userId }
       },
-      { new: true }
+      { new: true, session }
     )
 
     if(!promo) throw new ApiError(StatusCodes.NOT_FOUND, 'Promo code not valid');

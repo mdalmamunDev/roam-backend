@@ -67,6 +67,7 @@ const auth = (role: string | Role[]) =>
 
     req.user.location = user.location; // attach location to req.user
     req.user.name = user.name;
+    req.user.wallet = user.wallet;
 
     // Step 5: Role-based Authorization
     if (role === 'common') role = UserRole;

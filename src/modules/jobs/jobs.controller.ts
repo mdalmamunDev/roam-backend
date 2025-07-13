@@ -345,10 +345,13 @@ class Controller {
           towTruck.towTypeId,
           job.distance,
           promoCode,
-          auth.userId
+          auth.userId,
+          session
         );
 
       // Create transaction
+      if (auth.wallet < finalAmount) throw new ApiError(StatusCodes.BAD_REQUEST, "You don't have enough money");
+
       const tx = await Transaction.create(
         [
           {
