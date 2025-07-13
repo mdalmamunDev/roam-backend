@@ -23,23 +23,8 @@ const getValidProvider = async (userId: Types.ObjectId | string | undefined): Pr
   return {...user, ...tt}
 };
 
-const updateRating = async (userId: Types.ObjectId | string | undefined, rating: number): Promise<any> => {
-  // Update provider rating
-  const towTruck = await TowTruck.findOne({userId});
-  if (!towTruck) return;
-
-  // Calculate new average rating
-  const newTotalRating = (towTruck.totalRating || 0) + 1;
-  const newAvgRating = ((towTruck.avgRating || 0) * (towTruck.totalRating || 0) + rating) / newTotalRating;
-
-  towTruck.totalRating = newTotalRating;
-  towTruck.avgRating = newAvgRating;
-  await towTruck.save();
-};
-
 
 export const TowTruckService = {
   getValidProviderOrThrow,
   getValidProvider,
-  updateRating,
 };

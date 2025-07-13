@@ -51,6 +51,7 @@ class Controller {
         const p = await TowTruck.findOne({
           userId: u._id,
           isVerified: true,
+          isOnline: true,
         });
 
         if (!p) return null;

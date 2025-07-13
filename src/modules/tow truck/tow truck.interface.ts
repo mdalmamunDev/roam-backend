@@ -19,8 +19,7 @@ interface ITowTruck {
   driverImage : string;
   carImage : string;
   isVerified: boolean,
-  avgRating: number,
-  totalRating: number,
+  isOnline: boolean,
   createdAt: Date;
   updatedAt: Date;
 }

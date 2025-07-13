@@ -4,9 +4,8 @@ import { PaginateOptions, PaginateResult } from '../../types/paginate';
 import { TUser } from './user.interface';
 import { User } from './user.model';
 import { sendAdminOrSuperAdminCreationEmail } from '../../helpers/emailService';
-import { TowTruckService } from '../tow truck/tow truck.service';
-import { Role, TUserStatus } from './user.constant';
-import { ObjectId } from 'mongoose';
+import { TUserStatus } from './user.constant';
+import { ObjectId, Types } from 'mongoose';
 import colors from 'colors';
 import { logger } from '../../shared/logger';
 import moment from 'moment';
@@ -249,7 +248,19 @@ const getTotalUsers = async () => {
   return total;
 }
 
+const updateRating = async (userId: Types.ObjectId | string | undefined, rating: number): Promise<any> => {
+  // Update provider rating
+  const user = await User.findById(userId);
+  if (!user) return;
 
+  // Calculate new average rating
+  const newTotalRating = (user.totalRating || 0) + 1;
+  const newAvgRating = ((user.avgRating || 0) * (user.totalRating || 0) + rating) / newTotalRating;
+
+  user.totalRating = newTotalRating;
+  user.avgRating = newAvgRating;
+  await user.save();
+};
 
 export const UserService = {
   createAdminOrSuperAdmin,
@@ -264,4 +275,5 @@ export const UserService = {
   getUsersInRadius,
   updateUserLocation,
   getTotalUsers,
+  updateRating,
 };

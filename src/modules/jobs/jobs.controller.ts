@@ -12,6 +12,7 @@ import { PromoService } from '../promo/promo.service';
 import { TowTypeService } from '../tow type/tow type.service';
 import { startSession } from 'mongoose';
 import paginate from '../../helpers/paginationHelper';
+import { UserService } from '../user/user.service';
 
 class Controller {
 // get on going trips
@@ -85,23 +86,40 @@ class Controller {
       limit: parseInt(limit as string),
       filters: {
         providerId: req.user?.userId,
-        status: 'accepted', // Fetch jobs not completed
+        status: 'requested', // Fetch jobs not completed
       },
       sortField: sortField as string,
       sortOrder: sortOrder as string,
       model: Job,
+      populate: [
+        {path: 'userId', select: 'name profileImage'},
+      ]
     });
 
     const resResult = await Promise.all(
-      results.map(async (j: IJob) => {
-        const { name: providerName, companyName, description, driverImage } = await TowTruckService.getValidProvider(j.providerId);
+      results.map(async (j: any) => {
+        const tr = await Transaction.findOne({jobId: j._id});
 
         const [fromAddress, toAddress] = await Promise.all([
           getAddressFromCoordinates(j.fromLocation?.coordinates),
           getAddressFromCoordinates(j.toLocation?.coordinates),
         ]);
 
-        return { jobId: j._id, providerId: j.providerId, providerName, companyName, description, fromAddress, toAddress, driverImage, rating: j.rating };
+        const {profileImage: userProfile, name: userName, avgRating, totalRating } = j.userId;
+        return { 
+          jobId: j._id,
+          userProfile,
+          userName, 
+          amount: tr?.amount, 
+          avgRating, 
+          totalRating,
+          distance: `${j.distance?.toFixed(2)}km`,
+          fromAddress, 
+          toAddress,
+          vehicle: j.vehicle,
+          issue: j.issue,
+          note: j.note,
+        };
       })
     );
 
@@ -193,7 +211,7 @@ class Controller {
       fromAddress,
       toAddress,
       promos,
-      distance: job.distance,
+      distance: `${job.distance?.toFixed(2)}km`,
       amount,
       charge,
       discount,
@@ -219,6 +237,7 @@ class Controller {
 
     try {
       const towTruck = await TowTruckService.getValidProviderOrThrow(providerId);
+      if(!towTruck.isOnline) throw new ApiError(StatusCodes.BAD_REQUEST, 'Provider is offline')
 
       // Set provider on job
       const job = await Job.findOneAndUpdate(
@@ -337,6 +356,30 @@ class Controller {
     sendResponse(res, { code: StatusCodes.CREATED, message: 'Trip accepted successfully' });
   });
 
+  declineTrip = catchAsync(async (req, res) => {
+    const auth = req.user;
+    if (!auth) {
+      throw new ApiError(StatusCodes.UNAUTHORIZED, 'Unauthorized access.');
+    }
+
+    const {id} = req.params;
+    // set
+    const job = await Job.findOneAndUpdate(
+      { _id: id, status: { $in: ['requested'] }, providerId: auth.userId }, // Fixed $in syntax
+      { providerId: null, status: 'created' as IJobStatus },
+      { new: true }
+    )
+    || (() => { throw new ApiError(StatusCodes.NOT_FOUND, 'Trip not found or already in progress'); })();
+
+    // delete transaction
+    await Transaction.deleteMany({ jobId: id });
+
+    // make notification
+    await NotificationService.addNotification({receiverId: job.userId, title: 'Trip declined', message: `${auth.name} have declined the trip`});
+
+    sendResponse(res, { code: StatusCodes.CREATED, message: 'Trip canceled successfully' });
+  });
+
 
   review = catchAsync(async (req, res) => {
     const auth = req.user;
@@ -357,9 +400,23 @@ class Controller {
     || (() => { throw new ApiError(StatusCodes.NOT_FOUND, 'Trip not found or not complete yet'); })();
 
     // update the rating for tow truck
-    TowTruckService.updateRating(job.providerId, rating);
+    UserService.updateRating(job.providerId, rating);
     // make notification
     await NotificationService.addNotification({receiverId: job.providerId, title: 'Review', message: `${auth.name} give you ${rating}/5 rate`});
+    sendResponse(res, { code: StatusCodes.CREATED, message: 'Review submitted successfully' });
+  });
+
+  reviewUser = catchAsync(async (req, res) => {
+    const auth = req.user;
+    if (!auth) {
+      throw new ApiError(StatusCodes.UNAUTHORIZED, 'Unauthorized access.');
+    }
+
+    const {rating, userId} = req.body;
+    // update the rating for tow truck
+    UserService.updateRating(userId, rating);
+    // make notification
+    await NotificationService.addNotification({receiverId: userId, title: 'Review', message: `${auth.name} give you ${rating}/5 rate`});
     sendResponse(res, { code: StatusCodes.CREATED, message: 'Review submitted successfully' });
   });
 }

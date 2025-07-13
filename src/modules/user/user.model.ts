@@ -96,7 +96,15 @@ const userSchema = new Schema<TUser, UserModal>(
     step: {
       type: Number,
       default: 1,
-    }
+    },
+    avgRating: {
+      type: Number,
+      default: 0,
+    },
+    totalRating: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

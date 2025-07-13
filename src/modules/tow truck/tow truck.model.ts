@@ -63,13 +63,9 @@ const towTruckSchema = new Schema<ITowTruck>(
       type: Boolean,
       default: false,
     },
-    avgRating: {
-      type: Number,
-      default: 0,
-    },
-    totalRating: {
-      type: Number,
-      default: 0,
+    isOnline: {
+      type: Boolean,
+      default: false,
     },
   },
   {

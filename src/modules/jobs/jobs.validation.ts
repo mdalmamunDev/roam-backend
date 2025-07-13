@@ -50,3 +50,10 @@ export const validReview = z.object({
     comment,
   }).strict(),
 });
+
+export const validReviewUser = z.object({
+  body: z.object({
+    rating,
+    userId: objectId,
+  }).strict(),
+});

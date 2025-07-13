@@ -24,6 +24,8 @@ export type TUser = {
   failedLoginAttempts: number;
   lockUntil: Date | undefined;
   step: number,
+  avgRating: number,
+  totalRating: number,
   createdAt: Date;
   updatedAt: Date;
 };
