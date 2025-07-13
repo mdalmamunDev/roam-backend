@@ -23,6 +23,8 @@ interface IJob {
   rating: number,
   comment: string,
   status: IJobStatus,
+  createdAt: Date,
+  updatedAt: Date,
 }
 
 export default IJob;

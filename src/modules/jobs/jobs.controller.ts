@@ -40,7 +40,7 @@ class Controller {
           getAddressFromCoordinates(j.toLocation?.coordinates),
         ]);
 
-        return { jobId: j._id, providerName, companyName, description, fromAddress, toAddress, carImage, status: j.status };
+        return { jobId: j._id, providerId: j.providerId, providerName, companyName, description, fromAddress, toAddress, carImage, status: j.status, date: j.createdAt };
       })
     );
 
@@ -71,7 +71,84 @@ class Controller {
           getAddressFromCoordinates(j.toLocation?.coordinates),
         ]);
 
-        return { jobId: j._id, providerId: j.providerId, providerName, companyName, description, fromAddress, toAddress, driverImage, rating: j.rating };
+        return { jobId: j._id, providerId: j.providerId, providerName, companyName, description, fromAddress, toAddress, driverImage, rating: j.rating, date: j.createdAt };
+      })
+    );
+
+    sendResponse(res, { code: StatusCodes.OK, data: resResult, pagination });
+  });
+  getOnGoingForProvider = catchAsync(async (req, res) => {
+    const { page = 1, limit = 10, sortField = 'updatedAt', sortOrder = 'desc'} = req.query;
+
+    const { results, pagination } = await paginate({
+      page: parseInt(page as string),
+      limit: parseInt(limit as string),
+      filters: {
+        providerId: req.user?.userId,
+        status: { $ne: 'completed' }, // Fetch jobs not completed
+      },
+      sortField: sortField as string,
+      sortOrder: sortOrder as string,
+      model: Job,
+      populate: [{path: 'userId', select: 'name profileImage'}],
+    });
+
+    const resResult = await Promise.all(
+      results.map(async (j: any) => {
+        const [fromAddress, toAddress] = await Promise.all([
+          getAddressFromCoordinates(j.fromLocation?.coordinates),
+          getAddressFromCoordinates(j.toLocation?.coordinates),
+        ]);
+
+        return { 
+          jobId: j._id,
+          userId: j.userId?._id, 
+          userName: j.userId?.name,
+          profileImage: j.userId?.profileImage,
+          fromAddress, 
+          toAddress, 
+          status: j.status, 
+          date: j.createdAt 
+        };
+      })
+    );
+
+    sendResponse(res, { code: StatusCodes.OK, data: resResult, pagination });
+  });
+
+  getHistoryForProvider = catchAsync(async (req, res) => {
+    const { page = 1, limit = 10, sortField = 'updatedAt', sortOrder = 'desc'} = req.query;
+
+    const { results, pagination } = await paginate({
+      page: parseInt(page as string),
+      limit: parseInt(limit as string),
+      filters: {
+        providerId: req.user?.userId,
+        status: 'completed', // Fetch jobs not completed
+      },
+      sortField: sortField as string,
+      sortOrder: sortOrder as string,
+      model: Job,
+      populate: [{path: 'userId', select: 'name profileImage'}],
+    });
+
+    const resResult = await Promise.all(
+      results.map(async (j: any) => {
+        const [fromAddress, toAddress] = await Promise.all([
+          getAddressFromCoordinates(j.fromLocation?.coordinates),
+          getAddressFromCoordinates(j.toLocation?.coordinates),
+        ]);
+
+        return { 
+          jobId: j._id, 
+          userId: j.userId?._id, 
+          userName: j.userId?.name,
+          profileImage: j.userId?.profileImage,
+          fromAddress, 
+          toAddress,
+          rating: j.rating, 
+          date: j.createdAt 
+        };
       })
     );
 
@@ -108,6 +185,7 @@ class Controller {
         const {profileImage: userProfile, name: userName, avgRating, totalRating } = j.userId;
         return { 
           jobId: j._id,
+          userId: j.userId,
           userProfile,
           userName, 
           amount: tr?.amount, 
