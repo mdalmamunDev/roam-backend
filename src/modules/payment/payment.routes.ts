@@ -18,8 +18,8 @@ const router = express.Router();
 //     validateRequest(ValidPayment.refundReq),
 //     PaymentController.refundReq);
 // router.post("/refund/response/:transactionId", auth('admin'), validateRequest(ValidPayment.refundAdminRes), PaymentController.refundAdminRes);
-router.post('/transaction/send/:transactionId', auth(['user', 'provider']), PaymentController.sendToProvider);
-router.post('/transaction/transfer/:transactionId', auth(['user', 'provider']), PaymentController.transferToProvider);
+router.post('/transaction/send/:jobId', auth(['user', 'provider']), PaymentController.sendToProvider);
+router.post('/transaction/transfer/:jobId', auth(['user', 'provider']), PaymentController.transferToProvider);
 // router.get('/transaction/:id', auth('admin'), PaymentController.getTransactionById);
 // router.get('/all', auth('admin'), PaymentController.getAll);
 // router.get('/chart', auth('admin'), PaymentController.getEarningChart);

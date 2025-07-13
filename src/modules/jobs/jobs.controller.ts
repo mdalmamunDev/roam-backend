@@ -180,7 +180,8 @@ const book = catchAsync(async (req, res) => {
     throw new ApiError(StatusCodes.UNAUTHORIZED, 'Unauthorized access.');
   }
 
-  const { jobId, providerId, promoCode } = req.body;
+  const jobId = req.params.id;
+  const { providerId, promoCode } = req.body;
 
   const session = await startSession();
   session.startTransaction();
@@ -271,12 +272,15 @@ const cancelTrip = catchAsync(async (req, res) => {
     { providerId: null, status: 'created' as IJobStatus },
     { new: true }
   )
-  || (() => { throw new ApiError(StatusCodes.NOT_FOUND, 'Job not found or already in progress'); })();
+  || (() => { throw new ApiError(StatusCodes.NOT_FOUND, 'Trip not found or already in progress'); })();
+
+  // delete transaction
+  await Transaction.deleteMany({ jobId: id });
 
   // make notification
   await NotificationService.addNotification({receiverId: job.providerId, title: 'Trip canceled', message: `${auth.name} have canceled the trip`});
 
-  sendResponse(res, { code: StatusCodes.CREATED, message: 'Job created successfully', data: 0, });
+  sendResponse(res, { code: StatusCodes.CREATED, message: 'Trip canceled successfully' });
 });
 
 const acceptTrip = catchAsync(async (req, res) => {
@@ -291,15 +295,41 @@ const acceptTrip = catchAsync(async (req, res) => {
   // set
   const job = await Job.findOneAndUpdate(
     { _id: id, status: 'requested', providerId: auth.userId }, // Fixed $in syntax
-    { providerId: null, status: 'accepted' as IJobStatus },
+    { status: 'accepted' as IJobStatus },
     { new: true }
   )
-  || (() => { throw new ApiError(StatusCodes.NOT_FOUND, 'Job not found or already in progress'); })();
+  || (() => { throw new ApiError(StatusCodes.NOT_FOUND, 'Trip not found or already in progress'); })();
 
   // make notification
   await NotificationService.addNotification({receiverId: job.userId, title: 'Trip accepted', message: `Provider have accepted the trip`});
 
   sendResponse(res, { code: StatusCodes.CREATED, message: 'Trip accepted successfully' });
+});
+
+
+const review = catchAsync(async (req, res) => {
+  const auth = req.user;
+
+  if (!auth) {
+    throw new ApiError(StatusCodes.UNAUTHORIZED, 'Unauthorized access.');
+  }
+
+  const {id} = req.params;
+  const {rating, comment} = req.body;
+
+  // set
+  const job = await Job.findOneAndUpdate(
+    { _id: id, status: 'completed' as IJobStatus, userId: auth.userId }, // Fixed $in syntax
+    { rating, comment },
+    { new: true }
+  )
+  || (() => { throw new ApiError(StatusCodes.NOT_FOUND, 'Trip not found or not complete yet'); })();
+
+  // update the rating for tow truck
+  TowTruckService.updateRating(job.providerId, rating);
+  // make notification
+  await NotificationService.addNotification({receiverId: job.providerId, title: 'Review', message: `${auth.name} give you ${rating}/5 rate`});
+  sendResponse(res, { code: StatusCodes.CREATED, message: 'Review submitted successfully' });
 });
 
 
@@ -311,4 +341,5 @@ export const jobController = {
   book,
   cancelTrip,
   acceptTrip,
+  review,
 };

@@ -52,6 +52,12 @@ const jobSchema = new Schema<IJob>(
       type: Number,
       default: 0
     },
+    rating: {
+      type: Number,
+    },
+    comment: {
+      type: String,
+    },
     status: {
       type: String,
       enum: JobStatus,

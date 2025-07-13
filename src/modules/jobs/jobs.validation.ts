@@ -8,6 +8,8 @@ const vehicle = z.enum(JobVehicles as [string]);
 const issue = z.enum(JobIssues as [string]);
 const note = z.string().optional();
 const distance = z.number().min(0);
+const rating = z.number().min(1).max(5);
+const comment = z.string().optional();
 const status = z.enum(JobStatus as [string]);
 
 // Validation schema for IJob
@@ -37,8 +39,14 @@ export const validCreate = z.object({
 
 export const validBook = z.object({
   body: z.object({
-    jobId: objectId,
     providerId: objectId, // required
     promoCode: z.string().optional(),
+  }).strict(),
+});
+
+export const validReview = z.object({
+  body: z.object({
+    rating,
+    comment,
   }).strict(),
 });

@@ -20,6 +20,8 @@ interface IJob {
   fromLocation: TGeoLocation;
   toLocation: TGeoLocation; // for tow trucking
   distance: number,
+  rating: number,
+  comment: string,
   status: IJobStatus,
 }
 

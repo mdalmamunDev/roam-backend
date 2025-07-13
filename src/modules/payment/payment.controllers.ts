@@ -221,8 +221,8 @@ class Controller {
   });
 
   sendToProvider = catchAsync(async (req, res) => {
-    const { transactionId } = req.params;
-    const transaction = await Transaction.findOneAndUpdate({_id: transactionId, status: 'created' as ITransactionStatus, userId: req.user?.userId}, {status: 'sent' as ITransactionStatus});
+    const { jobId } = req.params;
+    const transaction = await Transaction.findOneAndUpdate({jobId, status: 'created' as ITransactionStatus, userId: req.user?.userId}, {status: 'sent' as ITransactionStatus});
     if (!transaction) throw new ApiError(StatusCodes.NOT_FOUND, 'Transaction not found or it\'s not possible yet.');
 
     // cut the amount from user wallet
@@ -236,8 +236,8 @@ class Controller {
   });
 
   transferToProvider = catchAsync(async (req, res) => {
-    const { transactionId } = req.params;
-    const transaction = await Transaction.findOne({ _id: transactionId, status: 'sent' as ITransactionStatus, isRefundRequested: false, userId: req.user?.userId });
+    const { jobId } = req.params;
+    const transaction = await Transaction.findOne({ jobId, status: 'sent' as ITransactionStatus, isRefundRequested: false, userId: req.user?.userId });
     if (!transaction) throw new ApiError(StatusCodes.NOT_FOUND, 'Transaction not found or it\'s not possible yet.');
 
     // Transfer the amount to the provider's wallet

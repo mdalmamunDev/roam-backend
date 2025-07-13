@@ -62,7 +62,15 @@ const towTruckSchema = new Schema<ITowTruck>(
     isVerified: {
       type: Boolean,
       default: false,
-    }
+    },
+    avgRating: {
+      type: Number,
+      default: 0,
+    },
+    totalRating: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,
