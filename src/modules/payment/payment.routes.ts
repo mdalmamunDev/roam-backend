@@ -7,7 +7,7 @@ import createUploadMiddleware from '../../middlewares/upload';
 
 const router = express.Router();
 
-// router.post('/add-balance', auth(['customer', 'mechanic', 'tow_truck']), validateRequest(ValidPayment.addBalance), PaymentController.addBalance); // will provide a url for payment
+router.post('/add-balance', auth(['user', 'provider']), validateRequest(ValidPayment.addBalance), PaymentController.addBalance); // will provide a url for payment
 // router.post("/withdraw/request", auth(['customer', 'mechanic', 'tow_truck']), validateRequest(ValidPayment.withdrawReq), PaymentController.sendWithdrawReq);
 // router.post('/withdraw/:withDrawId', auth('admin'), validateRequest(ValidPayment.withdrawAdminRes), PaymentController.withdrawRes);
 // router.get('/history', auth(['customer', 'mechanic', 'tow_truck']), PaymentController.userHistory);

@@ -1,21 +1,19 @@
 import { ObjectId, Types } from 'mongoose';
 import ApiError from '../../errors/ApiError';
 import { StatusCodes } from 'http-status-codes';
-import IPayment, { IPaymentStatus } from './payment.interface';
+import IPayment from './payment.interface';
 import Payment from './payment.model';
 import { SettingService } from '../settings/settings.service';
-import { config } from '../../config';
-import stripe from '../../helpers/stripe';
+import payment from '../../helpers/payment';
 import { User } from '../user/user.model';
 import Withdraw from './withdraw/withdraw.model';
 import Transaction from './transaction/transaction.model';
-import ITransaction, { ITransactionStatus, ITransactionType } from './transaction/transaction.interface';
+import ITransaction, { ITransactionStatus } from './transaction/transaction.interface';
 import { NotificationService } from '../notification/notification.services';
 import { BalanceService } from '../balance/balance.service';
 import { IWithdrawStatus } from './withdraw/withdraw.interface';
 import paginate from '../../helpers/paginationHelper';
 import moment from 'moment';
-import { populate } from 'dotenv';
 
 class Service {
   userHistory = async (userId: string | Types.ObjectId) => {
@@ -252,27 +250,27 @@ class Service {
   };
 
   store = async (userId: string | ObjectId, sessionId: string) => {
-    if (!userId) {
-      throw new ApiError(StatusCodes.UNAUTHORIZED, 'You aren\'t authorized.');
-    }
-    if (!sessionId) {
-      throw new ApiError(StatusCodes.BAD_REQUEST, "Payment session id is required.");
-    }
+    // if (!userId) {
+    //   throw new ApiError(StatusCodes.UNAUTHORIZED, 'You aren\'t authorized.');
+    // }
+    // if (!sessionId) {
+    //   throw new ApiError(StatusCodes.BAD_REQUEST, "Payment session id is required.");
+    // }
 
-    const paymentIntent = await stripe.checkout.sessions.retrieve(sessionId);
-    if (!paymentIntent) {
-      throw new ApiError(StatusCodes.BAD_REQUEST, "Payment Intent not found.");
-    }
+    // const paymentIntent = await payment.checkout.sessions.retrieve(sessionId);
+    // if (!paymentIntent) {
+    //   throw new ApiError(StatusCodes.BAD_REQUEST, "Payment Intent not found.");
+    // }
 
-    if (paymentIntent.amount_total == null) {
-      throw new ApiError(StatusCodes.BAD_REQUEST, "Payment Intent amount_total is missing.");
-    }
-    const data = await Payment.create({ sessionId, userId: userId, amount: paymentIntent.amount_total / 100 }); // in $dollar
-    if (!data) {
-      throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to store payment information.')
-    }
+    // if (paymentIntent.amount_total == null) {
+    //   throw new ApiError(StatusCodes.BAD_REQUEST, "Payment Intent amount_total is missing.");
+    // }
+    // const data = await Payment.create({ sessionId, userId: userId, amount: paymentIntent.amount_total / 100 }); // in $dollar
+    // if (!data) {
+    //   throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to store payment information.')
+    // }
 
-    return data;
+    // return data;
   }
 
   update = async (filters: any, payload: Partial<IPayment>): Promise<IPayment> => {
@@ -298,176 +296,165 @@ class Service {
     return result[0]?.totalAmount || 0;
   };
 
+  createCheckoutSession = async (email: string, amount: number, callback_url: string, metadata: Record<string, any> = {}) => {
+    const txRef = `ref-${Date.now()}`;
 
+    const payload = {
+      email,
+      amount: amount * 100, // in kobo
+      currency: 'NGN',
+      callback_url,
+      reference: txRef,
+      metadata,
+    };
 
-  createCheckoutSession = async (customerEmail: string, amount: number, success_url: string, cancel_url: string, projectData?: any) => {
-
-    if (!customerEmail) {
-      throw new ApiError(StatusCodes.BAD_REQUEST, "customerEmail is required !")
-    }
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      mode: "payment",
-      line_items: [{
-        price_data: {
-          currency: "usd",
-          unit_amount: amount * 100, // in cent
-          product_data: { name: "Add Balance" },
-        },
-        quantity: 1,
-      }],
-      customer_email: customerEmail,
-      success_url,
-      cancel_url,
-      metadata: {
-        customerEmail,
-        amount: amount,
-        projectData: JSON.stringify(projectData) || null
-      },
-    });
-    return { url: session.url, sessionId: session.id };
-  };
+    const response = await payment.post('/transaction/initialize', payload);
+    return {
+      authorizationUrl: response.data.data.authorization_url,
+      reference: response.data.data.reference,
+    };
+  }
 
   withdrawReq = async (amount: number, userId: string | ObjectId, refresh_url: string, return_url: string) => {
-    if (!userId) {
-      throw new ApiError(StatusCodes.UNAUTHORIZED, "You aren't authorized.");
-    }
+    // if (!userId) {
+    //   throw new ApiError(StatusCodes.UNAUTHORIZED, "You aren't authorized.");
+    // }
 
-    const session = await Withdraw.startSession();
-    session.startTransaction();
-    try {
-      const user = await User.findById(userId).session(session);
-      if (!user) {
-        throw new ApiError(StatusCodes.NOT_FOUND, "User not found.");
-      }
+    // const session = await Withdraw.startSession();
+    // session.startTransaction();
+    // try {
+    //   const user = await User.findById(userId).session(session);
+    //   if (!user) {
+    //     throw new ApiError(StatusCodes.NOT_FOUND, "User not found.");
+    //   }
 
-      const wResult = await Withdraw.aggregate([
-        {
-          $match: {
-            userId: new Types.ObjectId(user._id),
-            status: 'pending',
-          },
-        },
-        {
-          $group: {
-            _id: null,
-            totalSum: {
-              $sum: { $add: ['$amount', '$charge'] },  // sum of amount + charge
-            },
-          },
-        },
-      ]).session(session);
+    //   const wResult = await Withdraw.aggregate([
+    //     {
+    //       $match: {
+    //         userId: new Types.ObjectId(user._id),
+    //         status: 'pending',
+    //       },
+    //     },
+    //     {
+    //       $group: {
+    //         _id: null,
+    //         totalSum: {
+    //           $sum: { $add: ['$amount', '$charge'] },  // sum of amount + charge
+    //         },
+    //       },
+    //     },
+    //   ]).session(session);
 
-      const totalPending = wResult.length > 0 ? wResult[0].totalSum : 0;
+    //   const totalPending = wResult.length > 0 ? wResult[0].totalSum : 0;
 
-      const charge = await SettingService.commissionAmount(amount);
-      if (user.wallet - totalPending < amount + charge) {
-        const required = amount + charge;
-        throw new ApiError(StatusCodes.BAD_REQUEST, `Insufficient balance. Available: ${user.wallet} - ${totalPending} (pending withdraw), required: ${required} (${amount} + ${charge} charge)`);
-      }
+    //   const charge = await SettingService.commissionAmount(amount);
+    //   if (user.wallet - totalPending < amount + charge) {
+    //     const required = amount + charge;
+    //     throw new ApiError(StatusCodes.BAD_REQUEST, `Insufficient balance. Available: ${user.wallet} - ${totalPending} (pending withdraw), required: ${required} (${amount} + ${charge} charge)`);
+    //   }
 
-      // Ensure user has a Stripe account (sid)
-      if (!user.sid) {
-        const account = await stripe.accounts.create({ type: 'express', email: user.email });
-        user.sid = account.id;
-        await user.save({ session });
-      }
+    //   // Ensure user has a Stripe account (sid)
+    //   if (!user.sid) {
+    //     const account = await payment.accounts.create({ type: 'express', email: user.email });
+    //     user.sid = account.id;
+    //     await user.save({ session });
+    //   }
 
-      const accountInfo = await stripe.accounts.retrieve(user.sid);
-      if (!accountInfo.capabilities || accountInfo.capabilities.transfers !== 'active') {
-        const accountLink = await stripe.accountLinks.create({
-          account: user.sid,
-          refresh_url,
-          return_url,
-          type: 'account_onboarding',
-        });
-        await session.abortTransaction();
-        session.endSession();
-        return { url: accountLink.url, refresh_url, success_url: return_url };
-      }
+    //   const accountInfo = await payment.accounts.retrieve(user.sid);
+    //   if (!accountInfo.capabilities || accountInfo.capabilities.transfers !== 'active') {
+    //     const accountLink = await payment.accountLinks.create({
+    //       account: user.sid,
+    //       refresh_url,
+    //       return_url,
+    //       type: 'account_onboarding',
+    //     });
+    //     await session.abortTransaction();
+    //     session.endSession();
+    //     return { url: accountLink.url, refresh_url, success_url: return_url };
+    //   }
 
-      // Deduct the amount + charge from user's wallet atomically
-      user.wallet -= (amount + charge);
-      await user.save({ session });
+    //   // Deduct the amount + charge from user's wallet atomically
+    //   user.wallet -= (amount + charge);
+    //   await user.save({ session });
 
-      // store the withdrawal
-      const withdraw = await Withdraw.create([{ userId, amount, charge }], { session });
-      if (!withdraw || !withdraw[0]) {
-        throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create withdrawal request.');
-      }
+    //   // store the withdrawal
+    //   const withdraw = await Withdraw.create([{ userId, amount, charge }], { session });
+    //   if (!withdraw || !withdraw[0]) {
+    //     throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create withdrawal request.');
+    //   }
 
-      await session.commitTransaction();
-      session.endSession();
+    //   await session.commitTransaction();
+    //   session.endSession();
 
-      return withdraw[0];
-    } catch (error) {
-      await session.abortTransaction();
-      session.endSession();
-      throw error;
-    }
+    //   return withdraw[0];
+    // } catch (error) {
+    //   await session.abortTransaction();
+    //   session.endSession();
+    //   throw error;
+    // }
   };
 
   withdrawAdminRes = async (withDrawId: string, status: IWithdrawStatus) => {
-    if (!withDrawId) {
-      throw new ApiError(StatusCodes.BAD_REQUEST, "Invalid withdrawal request ID.");
-    }
-    const withDraw = await Withdraw.findById(withDrawId);
-    if (!withDraw || withDraw.status === 'success') {
-      throw new ApiError(StatusCodes.NOT_FOUND, "No withdraw request found or already withdraw success.");
-    }
+    // if (!withDrawId) {
+    //   throw new ApiError(StatusCodes.BAD_REQUEST, "Invalid withdrawal request ID.");
+    // }
+    // const withDraw = await Withdraw.findById(withDrawId);
+    // if (!withDraw || withDraw.status === 'success') {
+    //   throw new ApiError(StatusCodes.NOT_FOUND, "No withdraw request found or already withdraw success.");
+    // }
 
-    // handle cancel
-    if (status === 'canceled') {
-      withDraw.status = status;
-      await withDraw.save();
-      return withDraw;
-    }
+    // // handle cancel
+    // if (status === 'canceled') {
+    //   withDraw.status = status;
+    //   await withDraw.save();
+    //   return withDraw;
+    // }
 
-    const user = await User.findById(withDraw.userId);
-    if (!user) {
-      throw new ApiError(StatusCodes.NOT_FOUND, "User not found.");
-    }
+    // const user = await User.findById(withDraw.userId);
+    // if (!user) {
+    //   throw new ApiError(StatusCodes.NOT_FOUND, "User not found.");
+    // }
 
-    let accountInfo;
-    try {
-      accountInfo = await stripe.accounts.retrieve(user.sid);
-    } catch (error) {
-      throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, "Failed to retrieve account information.");
-    }
-    if (!accountInfo.capabilities || accountInfo.capabilities.transfers !== 'active') {
-      throw new ApiError(StatusCodes.PAYMENT_REQUIRED, "Get bank information from user first.");
-    }
+    // let accountInfo;
+    // try {
+    //   accountInfo = await payment.accounts.retrieve(user.sid);
+    // } catch (error) {
+    //   throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, "Failed to retrieve account information.");
+    // }
+    // if (!accountInfo.capabilities || accountInfo.capabilities.transfers !== 'active') {
+    //   throw new ApiError(StatusCodes.PAYMENT_REQUIRED, "Get bank information from user first.");
+    // }
 
-    let transfer = await stripe.transfers.create({
-      amount: withDraw.amount,
-      currency: 'usd',
-      destination: user.sid,
-      description: 'Payment transfer for withdraw.',
-    });
-    if (!transfer) {
-      throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, "Payment transfer failed.");
-    }
+    // let transfer = await payment.transfers.create({
+    //   amount: withDraw.amount,
+    //   currency: 'usd',
+    //   destination: user.sid,
+    //   description: 'Payment transfer for withdraw.',
+    // });
+    // if (!transfer) {
+    //   throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, "Payment transfer failed.");
+    // }
 
-    if (transfer.balance_transaction) {
-      withDraw.status = 'success';
-      // cut the amount from user's wallet
-      user.wallet -= withDraw.amount + withDraw.charge,
-      Promise.all([
-        withDraw.save(),
-        // update the admin balance
-        BalanceService.addChargeBalance(withDraw.charge),
-        BalanceService.addAppBalance(-(withDraw.amount + withDraw.charge)),
-        user.save(),
-        // send notification to user
-        NotificationService.addNotification({
-          receiverId: withDraw.userId?.toString(),
-          title: 'Withdraw success!',
-          message: `Your withdrawal amount ${withDraw.amount} added to your account`
-        }),
-      ]);
+    // if (transfer.balance_transaction) {
+    //   withDraw.status = 'success';
+    //   // cut the amount from user's wallet
+    //   user.wallet -= withDraw.amount + withDraw.charge,
+    //   Promise.all([
+    //     withDraw.save(),
+    //     // update the admin balance
+    //     BalanceService.addChargeBalance(withDraw.charge),
+    //     BalanceService.addAppBalance(-(withDraw.amount + withDraw.charge)),
+    //     user.save(),
+    //     // send notification to user
+    //     NotificationService.addNotification({
+    //       receiverId: withDraw.userId?.toString(),
+    //       title: 'Withdraw success!',
+    //       message: `Your withdrawal amount ${withDraw.amount} added to your account`
+    //     }),
+    //   ]);
 
-    }
-    return withDraw;
+    // }
+    // return withDraw;
   }
 
 
@@ -512,7 +499,7 @@ class Service {
       throw new ApiError(StatusCodes.BAD_REQUEST, 'Amount cannot be negative.');
     }
 
-    const user = await User.findById(payload.customerId);
+    const user = await User.findById(payload.userId);
     if (!user) {
       throw new ApiError(StatusCodes.NOT_FOUND, 'Customer not found.');
     }
@@ -589,7 +576,7 @@ class Service {
         notifications.push(NotificationService.addNotification({
           receiverId: provider._id.toString(),
           title: 'Balance Added to Wallet',
-          message: `$${tx.amount} added to your wallet from ${tx.customerId}.`,
+          message: `$${tx.amount} added to your wallet from ${tx.userId}.`,
         }));
       }
     }

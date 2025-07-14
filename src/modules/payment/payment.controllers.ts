@@ -1,4 +1,4 @@
-import stripe from "../../helpers/stripe";
+import payment from "../../helpers/payment";
 import catchAsync from "../../shared/catchAsync";
 import sendResponse from "../../shared/sendResponse";
 import ApiError from "../../errors/ApiError";
@@ -15,43 +15,43 @@ import { IJobStatus } from "../jobs/jobs.interface";
 class Controller {
   // Handle Stripe webhook events
   handleWebhook = catchAsync(async (req, res) => {
-    const sig = req.headers['stripe-signature'] as string;
+    // const sig = req.headers['payment-signature'] as string;
 
-    let event;
+    // let event;
 
-    event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET!);
+    // event = payment.webhooks.constructEvent(req.body, sig, process.env.PAYSTACK_WEBHOOK_SECRET!);
 
-    console.log('Webhook received:', event);
+    // console.log('Webhook received:', event);
 
-    // Handle the event
-    const session: any = event.data?.object;
-    if (!session || !session.id) {
-      return sendResponse(res, { code: StatusCodes.BAD_REQUEST, message: "Invalid session object received." });
-    }
-    switch (event.type) {
-      case 'checkout.session.completed': {
-        const payment = await PaymentService.update({ sessionId: session.id }, { status: 'success', trId: session.payment_intent });
-        if (payment) {
-          await Promise.all([
-            User.findByIdAndUpdate(payment.userId, { $inc: { wallet: payment.amount } }),
-            NotificationService.addNotification({ receiverId: payment.userId.toString(), title: 'Add balance', message: `You have added ${payment.amount}$ successfully.` }),
-            BalanceService.addAppBalance(payment.amount),
-          ]);
-        }
-        break;
-      }
-      case 'checkout.session.async_payment_failed': {
-        const payment = await PaymentService.update({ sessionId: session.id }, { status: 'failed' });
-        if (payment) {
-          await NotificationService.addNotification({ receiverId: payment.userId.toString(), title: 'Add balance', message: `Your payment ${payment.amount}$ was incomplete.` })
-        }
-        break;
-      }
-      default:
-        console.log(`Unhandled event type ${event.type}`);
-    }
+    // // Handle the event
+    // const session: any = event.data?.object;
+    // if (!session || !session.id) {
+    //   return sendResponse(res, { code: StatusCodes.BAD_REQUEST, message: "Invalid session object received." });
+    // }
+    // switch (event.type) {
+    //   case 'checkout.session.completed': {
+    //     const payment = await PaymentService.update({ sessionId: session.id }, { status: 'success', trId: session.payment_intent });
+    //     if (payment) {
+    //       await Promise.all([
+    //         User.findByIdAndUpdate(payment.userId, { $inc: { wallet: payment.amount } }),
+    //         NotificationService.addNotification({ receiverId: payment.userId.toString(), title: 'Add balance', message: `You have added ${payment.amount}$ successfully.` }),
+    //         BalanceService.addAppBalance(payment.amount),
+    //       ]);
+    //     }
+    //     break;
+    //   }
+    //   case 'checkout.session.async_payment_failed': {
+    //     const payment = await PaymentService.update({ sessionId: session.id }, { status: 'failed' });
+    //     if (payment) {
+    //       await NotificationService.addNotification({ receiverId: payment.userId.toString(), title: 'Add balance', message: `Your payment ${payment.amount}$ was incomplete.` })
+    //     }
+    //     break;
+    //   }
+    //   default:
+    //     console.log(`Unhandled event type ${event.type}`);
+    // }
 
-    sendResponse(res, { code: StatusCodes.OK, message: "Webhook received", data: { received: true } });
+    // sendResponse(res, { code: StatusCodes.OK, message: "Webhook received", data: { received: true } });
   });
 
 
@@ -59,18 +59,23 @@ class Controller {
   addBalance = catchAsync(async (req, res) => {
     const { amount } = req.body
     const user = req.user;
-    if (!user) {
-      throw new ApiError(StatusCodes.NOT_FOUND, "User Not Found ! ");
-    }
+    if (!user) throw new ApiError(StatusCodes.NOT_FOUND, "User Not Found ! ");
+    
 
     const success_url = `${req.protocol}://${req.get('host')}/payment-success`
-    const cancel_url = `${req.protocol}://${req.get('host')}/payment-cancel`
-    const { url, sessionId } = await PaymentService.createCheckoutSession(user.email, amount, success_url, cancel_url, user)
+    // const cancel_url = `${req.protocol}://${req.get('host')}/payment-cancel`
+    const result = await PaymentService.createCheckoutSession(
+      user.email, amount, success_url,
+      {
+        userId: user._id, 
+        purpose: 'Wallet Deposit'
+      }
+    );
 
     // store the payment details
-    await PaymentService.store(user.userId, sessionId);
+    // await PaymentService.store(user.userId, sessionId);
 
-    sendResponse(res, { code: StatusCodes.OK, message: " Please add your balance ", data: url });
+    sendResponse(res, { code: StatusCodes.OK, message: " Please add your balance ", data: result });
   });
 
   // user send to admin to withdraw their mony

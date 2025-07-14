@@ -71,9 +71,9 @@ export const config = {
     baseUrl: `http://${process.env.BACKEND_IP}:${process.env.PORT}`,
   },
 
-  stripe: {
-    secretKey: process.env.STRIPE_SECRET_KEY || '',
-    webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || '',
+  pay: {
+    secretKey: process.env.PAYSTACK_SECRET_KEY || '',
+    webhookSecret: process.env.PAYSTACK_WEBHOOK_SECRET || '',
   },
 
   jobProcess: {
