@@ -15,6 +15,10 @@ import { IJobStatus } from "../jobs/jobs.interface";
 class Controller {
   // Handle Stripe webhook events
   handleWebhook = catchAsync(async (req, res) => {
+    console.log(888);
+    console.log(req);
+    console.log(res);
+    console.log(999);
     // const sig = req.headers['payment-signature'] as string;
 
     // let event;
@@ -51,7 +55,7 @@ class Controller {
     //     console.log(`Unhandled event type ${event.type}`);
     // }
 
-    // sendResponse(res, { code: StatusCodes.OK, message: "Webhook received", data: { received: true } });
+    sendResponse(res, { code: StatusCodes.OK, message: "Webhook received", data: { received: true } });
   });
 
 

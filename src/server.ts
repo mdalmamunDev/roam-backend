@@ -20,10 +20,10 @@ async function main() {
 
     const port =
       typeof config.port === 'number' ? config.port : Number(config.port);
-    server = app.listen(port, config.backend.ip as string, () => {
+    server = app.listen(port, () => {
       logger.info(
         colors.yellow(
-          `♻️  Application listening on port ${config.backend.baseUrl}`,
+          `♻️  Application listening on port ${config.port}`,
         ),
       );
     });
