@@ -11,14 +11,61 @@ import Transaction from "./transaction/transaction.model";
 import { ITransactionStatus } from "./transaction/transaction.interface";
 import Job from "../jobs/jobs.model";
 import { IJobStatus } from "../jobs/jobs.interface";
+import * as crypto from 'crypto';
+import { config } from "../../config";
+
 
 class Controller {
   // Handle Stripe webhook events
-  handleWebhook = catchAsync(async (req, res) => {
-    console.log(888);
-    console.log(req);
-    console.log(res);
-    console.log(999);
+  handleWebhook = catchAsync(async (req: any, res: any) => {
+    // Step 1: Log raw buffer (confirm it is not parsed)
+    console.log('🔍 Raw body (buffer):', req.body);
+
+    // Step 2: Generate HMAC hash of raw body
+    const hash = crypto
+      .createHmac('sha512', config.pay?.secretKey)
+      .update(req.body)
+      .digest('hex');
+
+    // Step 3: Log generated hash and incoming header
+    const paystackSignature = req.headers['x-paystack-signature'];
+    console.log('🔐 Generated hash:', hash);
+    console.log('📩 Header signature:', paystackSignature);
+
+    // Step 4: Validate signature
+    if (hash !== paystackSignature) {
+      console.log('❌ Signature mismatch');
+      return res.status(401).send('Invalid signature');
+    }
+
+    // Step 5: Convert raw buffer to JSON
+    const event = JSON.parse(req.body.toString());
+    console.log('✅ Parsed event:', event);
+
+    // Step 6: Handle different event types
+    switch (event.event) {
+      case 'charge.success':
+        console.log('💰 charge.success event triggered');
+        const { reference, amount, metadata } = event.data;
+        console.log('📦 Reference:', reference);
+        console.log('💵 Amount:', amount);
+        console.log('📄 Metadata:', metadata);
+        // TODO: Lookup transaction in DB and update wallet here
+        break;
+
+      case 'transfer.success':
+        console.log('✅ Transfer success:', event.data.reference);
+        break;
+
+      case 'transfer.failed':
+        console.log('❌ Transfer failed:', event.data.reference);
+        break;
+
+      default:
+        console.log('ℹ️ Unhandled event:', event.event);
+    }
+
+    return res.status(200).send('Webhook received');
     // const sig = req.headers['payment-signature'] as string;
 
     // let event;
@@ -55,7 +102,7 @@ class Controller {
     //     console.log(`Unhandled event type ${event.type}`);
     // }
 
-    sendResponse(res, { code: StatusCodes.OK, message: "Webhook received", data: { received: true } });
+    // sendResponse(res, { code: StatusCodes.OK, message: "Webhook received", data: { received: true } });
   });
 
 
