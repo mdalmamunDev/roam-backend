@@ -4,7 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 import IPayment from './payment.interface';
 import Payment from './payment.model';
 import { SettingService } from '../settings/settings.service';
-import payment from '../../helpers/payment';
+import paymentApi from '../../helpers/paymentApi';
 import { User } from '../user/user.model';
 import Withdraw from './withdraw/withdraw.model';
 import Transaction from './transaction/transaction.model';
@@ -14,6 +14,8 @@ import { BalanceService } from '../balance/balance.service';
 import { IWithdrawStatus } from './withdraw/withdraw.interface';
 import paginate from '../../helpers/paginationHelper';
 import moment from 'moment';
+import { v4 as uuidv4 } from 'uuid';
+
 
 class Service {
   userHistory = async (userId: string | Types.ObjectId) => {
@@ -249,38 +251,14 @@ class Service {
     return { ...data };
   };
 
-  store = async (userId: string | ObjectId, sessionId: string) => {
-    // if (!userId) {
-    //   throw new ApiError(StatusCodes.UNAUTHORIZED, 'You aren\'t authorized.');
-    // }
-    // if (!sessionId) {
-    //   throw new ApiError(StatusCodes.BAD_REQUEST, "Payment session id is required.");
-    // }
+  // update = async (filters: any, payload: Partial<IPayment>): Promise<IPayment> => {
+  //   const data = await Payment.findOneAndUpdate(filters, payload, { new: true }).lean();
+  //   if (!data) {
+  //     throw new ApiError(StatusCodes.BAD_REQUEST, 'No payment found.');
+  //   }
 
-    // const paymentIntent = await payment.checkout.sessions.retrieve(sessionId);
-    // if (!paymentIntent) {
-    //   throw new ApiError(StatusCodes.BAD_REQUEST, "Payment Intent not found.");
-    // }
-
-    // if (paymentIntent.amount_total == null) {
-    //   throw new ApiError(StatusCodes.BAD_REQUEST, "Payment Intent amount_total is missing.");
-    // }
-    // const data = await Payment.create({ sessionId, userId: userId, amount: paymentIntent.amount_total / 100 }); // in $dollar
-    // if (!data) {
-    //   throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to store payment information.')
-    // }
-
-    // return data;
-  }
-
-  update = async (filters: any, payload: Partial<IPayment>): Promise<IPayment> => {
-    const data = await Payment.findOneAndUpdate(filters, payload, { new: true }).lean();
-    if (!data) {
-      throw new ApiError(StatusCodes.BAD_REQUEST, 'No payment found.');
-    }
-
-    return data;
-  };
+  //   return data;
+  // };
 
   getTotalWithdrawal = async (): Promise<number> => {
     const result = await Withdraw.aggregate([
@@ -297,7 +275,7 @@ class Service {
   };
 
   createCheckoutSession = async (email: string, amount: number, callback_url: string, metadata: Record<string, any> = {}) => {
-    const txRef = `ref-${Date.now()}`;
+    const txRef =  `ref_${uuidv4()}`;
 
     const payload = {
       email,
@@ -308,7 +286,7 @@ class Service {
       metadata,
     };
 
-    const response = await payment.post('/transaction/initialize', payload);
+    const response = await paymentApi.post('/transaction/initialize', payload);
     return {
       authorizationUrl: response.data.data.authorization_url,
       reference: response.data.data.reference,

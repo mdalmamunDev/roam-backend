@@ -3,15 +3,7 @@ import IPayment, { PaymentStatus } from './payment.interface';
 
 const schema = new Schema<IPayment>(
   {
-    sessionId: {
-      type: String,
-      required: [true, 'Payment session ID is required.'],
-      unique: true,
-    },
-    trId: {
-      type: String,
-    },
-    userId: {
+        userId: {
       type: Types.ObjectId,
       ref: 'User',
       required: [true, 'User Id is required.'],

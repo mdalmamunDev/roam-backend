@@ -1,4 +1,3 @@
-import payment from "../../helpers/payment";
 import catchAsync from "../../shared/catchAsync";
 import sendResponse from "../../shared/sendResponse";
 import ApiError from "../../errors/ApiError";
@@ -13,6 +12,8 @@ import Job from "../jobs/jobs.model";
 import { IJobStatus } from "../jobs/jobs.interface";
 import * as crypto from 'crypto';
 import { config } from "../../config";
+import Payment from "./payment.model";
+import { IPaymentStatus } from "./payment.interface";
 
 
 class Controller {
@@ -29,7 +30,7 @@ class Controller {
 
     // Step 3: Log generated hash and incoming header
     const paystackSignature = req.headers['x-paystack-signature'];
-    console.log('🔐 Generated hash:', hash);
+    console.log('🔐 Generated hash:', hash); // TODO: remove the extra logs
     console.log('📩 Header signature:', paystackSignature);
 
     // Step 4: Validate signature
@@ -42,17 +43,33 @@ class Controller {
     const event = JSON.parse(req.body.toString());
     console.log('✅ Parsed event:', event);
 
+    const { reference, amount, metadata } = event.data;
     // Step 6: Handle different event types
     switch (event.event) {
-      case 'charge.success':
+      case 'charge.success': {
         console.log('💰 charge.success event triggered');
-        const { reference, amount, metadata } = event.data;
         console.log('📦 Reference:', reference);
         console.log('💵 Amount:', amount);
         console.log('📄 Metadata:', metadata);
-        // TODO: Lookup transaction in DB and update wallet here
+        
+        const payment = await Payment.findByIdAndUpdate(metadata?.pid, {status: 'success'});
+        if (payment) {
+          await Promise.all([
+            User.findByIdAndUpdate(payment.userId, { $inc: { wallet: payment.amount } }),
+            NotificationService.addNotification({ receiverId: payment.userId?.toString(), title: 'Add balance', message: `You have added ${payment.amount}$ successfully.` }),
+            BalanceService.addAppBalance(payment.amount),
+          ]);
+        }
         break;
+      }
+      case 'charge.failed': {
+        const payment = await Payment.findByIdAndUpdate(metadata?.pid, {status: 'failed' as IPaymentStatus});
+        if (payment) {
+          await NotificationService.addNotification({ receiverId: payment.userId.toString(), title: 'Add balance', message: `Your payment ${payment.amount}$ was incomplete.` })
+        }
 
+        break;
+      }
       case 'transfer.success':
         console.log('✅ Transfer success:', event.data.reference);
         break;
@@ -66,43 +83,6 @@ class Controller {
     }
 
     return res.status(200).send('Webhook received');
-    // const sig = req.headers['payment-signature'] as string;
-
-    // let event;
-
-    // event = payment.webhooks.constructEvent(req.body, sig, process.env.PAYSTACK_WEBHOOK_SECRET!);
-
-    // console.log('Webhook received:', event);
-
-    // // Handle the event
-    // const session: any = event.data?.object;
-    // if (!session || !session.id) {
-    //   return sendResponse(res, { code: StatusCodes.BAD_REQUEST, message: "Invalid session object received." });
-    // }
-    // switch (event.type) {
-    //   case 'checkout.session.completed': {
-    //     const payment = await PaymentService.update({ sessionId: session.id }, { status: 'success', trId: session.payment_intent });
-    //     if (payment) {
-    //       await Promise.all([
-    //         User.findByIdAndUpdate(payment.userId, { $inc: { wallet: payment.amount } }),
-    //         NotificationService.addNotification({ receiverId: payment.userId.toString(), title: 'Add balance', message: `You have added ${payment.amount}$ successfully.` }),
-    //         BalanceService.addAppBalance(payment.amount),
-    //       ]);
-    //     }
-    //     break;
-    //   }
-    //   case 'checkout.session.async_payment_failed': {
-    //     const payment = await PaymentService.update({ sessionId: session.id }, { status: 'failed' });
-    //     if (payment) {
-    //       await NotificationService.addNotification({ receiverId: payment.userId.toString(), title: 'Add balance', message: `Your payment ${payment.amount}$ was incomplete.` })
-    //     }
-    //     break;
-    //   }
-    //   default:
-    //     console.log(`Unhandled event type ${event.type}`);
-    // }
-
-    // sendResponse(res, { code: StatusCodes.OK, message: "Webhook received", data: { received: true } });
   });
 
 
@@ -112,19 +92,21 @@ class Controller {
     const user = req.user;
     if (!user) throw new ApiError(StatusCodes.NOT_FOUND, "User Not Found ! ");
     
+    // store the payment details
+     const data = await Payment.create({ userId: user.userId, amount });
+    if (!data) throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, 'Failed to store payment information.')
 
     const success_url = `${req.protocol}://${req.get('host')}/payment-success`
     // const cancel_url = `${req.protocol}://${req.get('host')}/payment-cancel`
     const result = await PaymentService.createCheckoutSession(
       user.email, amount, success_url,
       {
+        pid: data._id,
         userId: user._id, 
         purpose: 'Wallet Deposit'
       }
     );
 
-    // store the payment details
-    // await PaymentService.store(user.userId, sessionId);
 
     sendResponse(res, { code: StatusCodes.OK, message: " Please add your balance ", data: result });
   });

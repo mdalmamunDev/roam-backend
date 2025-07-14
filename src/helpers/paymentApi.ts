@@ -1,7 +1,7 @@
 import { config } from "../config";
 import axios from 'axios';
 
-const payment = axios.create({
+const paymentApi = axios.create({
   baseURL: 'https://api.paystack.co',
   headers: {
     Authorization: `Bearer ${config.pay?.secretKey}`,
@@ -9,4 +9,4 @@ const payment = axios.create({
   },
 });
 
-export default payment
+export default paymentApi
