@@ -71,7 +71,7 @@ const userSchema = new Schema<TUser, UserModal>(
       type: String,
       enum: {
         values: UserStatus,
-        message: '{VALUE} is not a valid role',
+        message: '{VALUE} is not a valid status',
       },
       default: 'active',
     },

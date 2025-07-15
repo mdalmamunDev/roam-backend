@@ -8,6 +8,10 @@ const schema = new Schema<IWithdraw>(
       ref: "User",
       required: [true, 'User Id is required.'],
     },
+    trId: {
+      type: String,
+      unique: true,
+    },
     amount: {
       type: Number,
       required: [true, 'Amount is required.'],

@@ -5,6 +5,7 @@ export const WithdrawStatus: IWithdrawStatus[] = ['pending', 'success', 'cancele
 
 interface IWithdraw {
   userId: ObjectId,
+  trId: String,
   amount: number,
   charge: number,
   status: IWithdrawStatus,

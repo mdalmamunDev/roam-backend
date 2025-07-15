@@ -14,6 +14,10 @@ import * as crypto from 'crypto';
 import { config } from "../../config";
 import Payment from "./payment.model";
 import { IPaymentStatus } from "./payment.interface";
+import Withdraw from "./withdraw/withdraw.model";
+import { Types } from "mongoose";
+import { SettingService } from "../settings/settings.service";
+import IWithdraw from "./withdraw/withdraw.interface";
 
 
 class Controller {
@@ -52,7 +56,7 @@ class Controller {
         console.log('💵 Amount:', amount);
         console.log('📄 Metadata:', metadata);
         
-        const payment = await Payment.findByIdAndUpdate(metadata?.pid, {status: 'success'});
+        const payment = await Payment.findByIdAndUpdate(metadata?.pid, {status: 'success', trId: event.data?.id});
         if (payment) {
           await Promise.all([
             User.findByIdAndUpdate(payment.userId, { $inc: { wallet: payment.amount } }),
@@ -112,13 +116,60 @@ class Controller {
   });
 
   // user send to admin to withdraw their mony
-  sendWithdrawReq = catchAsync(async (req, res) => {
-    const { amount } = req.body;
+  sendWithdrawReq = catchAsync(async (req: any, res: any) => {
+    const {userId, name} = req.user;
+    if (!userId) throw new ApiError(StatusCodes.UNAUTHORIZED, "You aren't authorized.");
     
-    const refresh_url = `${req.protocol}://${req.get('host')}/payment-cancel`
-    const return_url = `${req.protocol}://${req.get('host')}/payment-success`
-    const data: any = await PaymentService.withdrawReq(amount, req.user?.userId, refresh_url, return_url)
-    sendResponse(res, { code: StatusCodes.OK, message: data.url ? 'Please setup your account first.' : 'Withdraw request sent ! ', data });
+    const { account_number, bank_code, amount, reason = 'Paystack withdraw' } = req.body;
+
+    const session = await Withdraw.startSession();
+    session.startTransaction();
+    try {
+      const user = await User.findById(userId).session(session);
+      if (!user) throw new ApiError(StatusCodes.NOT_FOUND, "User not found.");
+
+      const wResult = await Withdraw.aggregate([
+        {
+          $match: {
+            userId: new Types.ObjectId(user._id),
+            status: 'pending',
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            totalSum: {
+              $sum: { $add: ['$amount', '$charge'] },  // sum of amount + charge
+            },
+          },
+        },
+      ]).session(session);
+
+      const totalPending = wResult.length > 0 ? wResult[0].totalSum : 0;
+      const charge = await SettingService.commissionAmount(amount);
+      if (user.wallet - totalPending < amount + charge) 
+        throw new ApiError(StatusCodes.BAD_REQUEST, `Insufficient balance. Available: ${user.wallet} - ${totalPending} (pending withdraw), required: ${amount + charge} (${amount} + ${charge} charge)`);
+
+      // transfer balance
+      const recipient_code = await PaymentService.createTransferRecipient({ name, account_number, bank_code });
+      const transfer = await PaymentService.initiateTransfer({ amount, recipient_code, reason });
+
+      // Deduct the amount + charge from user's wallet atomically
+      user.wallet -= (amount + charge);
+      await user.save({ session });
+
+      // store the withdrawal
+      const withdraw = await Withdraw.create([{ userId, amount, charge, trId: transfer?.id } as IWithdraw], { session });
+      if (!withdraw || !withdraw[0]) throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create withdrawal request.');
+      
+      await session.commitTransaction();
+      session.endSession();
+      sendResponse(res, {code: StatusCodes.CREATED, message: 'Your withdrawal request has been recorded'})
+    } catch (error) {
+      await session.abortTransaction();
+      session.endSession();
+      throw error;
+    }
   })
 
   // admin response the request

@@ -1,7 +1,5 @@
 import { z } from 'zod';
 import { PaymentStatus } from './payment.interface';
-import { objectId } from '../../helpers/zValidationUtil';
-import { TransactionStatus, TransactionType } from './transaction/transaction.interface';
 import { WithdrawStatus } from './withdraw/withdraw.interface';
 
 // Validation for the payment object
@@ -41,7 +39,10 @@ class Valid {
   // Reusable validation for mechanicId
   withdrawReq = z.object({
     body: z.object({
-      amount
+      account_number: z.string(),
+      bank_code: z.string(),
+      amount: z.number().positive('Amount must be greater than 0'),
+      reason: z.string().optional(),
     }).strict()
   });
   withdrawAdminRes = z.object({
@@ -56,9 +57,9 @@ class Valid {
   });
   refundReq = z.object({
     body: z.object({
-      jobProcessId: z.string(), // TODO: valid object ID
-      type: z.enum(TransactionType as [string]),
-      // refundImages: z.array(z.string()),
+      // jobProcessId: z.string(), // TODO: valid object ID
+      // type: z.enum(TransactionType as [string]),
+      // // refundImages: z.array(z.string()),
       refundDetails: z.string(),
     })
   });

@@ -15,6 +15,7 @@ import { IWithdrawStatus } from './withdraw/withdraw.interface';
 import paginate from '../../helpers/paginationHelper';
 import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
+import axios from 'axios';
 
 
 class Service {
@@ -293,84 +294,39 @@ class Service {
     };
   }
 
-  withdrawReq = async (amount: number, userId: string | ObjectId, refresh_url: string, return_url: string) => {
-    // if (!userId) {
-    //   throw new ApiError(StatusCodes.UNAUTHORIZED, "You aren't authorized.");
-    // }
+createTransferRecipient = async ({ name, account_number, bank_code, currency = 'NGN'}: { name: string; account_number: string; bank_code: string; currency?: string; }) => {
+  try {
+    const response = await paymentApi.post('/transferrecipient', {
+      type: 'nuban',
+      name,
+      account_number,
+      bank_code,
+      currency,
+    });
 
-    // const session = await Withdraw.startSession();
-    // session.startTransaction();
-    // try {
-    //   const user = await User.findById(userId).session(session);
-    //   if (!user) {
-    //     throw new ApiError(StatusCodes.NOT_FOUND, "User not found.");
-    //   }
+    return response.data.data.recipient_code; // Save this code
+  } catch (err: any) {
+    console.error('Paystack createRecipient error:', err.response?.data || err.message);
+    throw new ApiError(400, err.response?.data?.message || 'Paystack recipient error');
+  }
+};
 
-    //   const wResult = await Withdraw.aggregate([
-    //     {
-    //       $match: {
-    //         userId: new Types.ObjectId(user._id),
-    //         status: 'pending',
-    //       },
-    //     },
-    //     {
-    //       $group: {
-    //         _id: null,
-    //         totalSum: {
-    //           $sum: { $add: ['$amount', '$charge'] },  // sum of amount + charge
-    //         },
-    //       },
-    //     },
-    //   ]).session(session);
+initiateTransfer = async ({ amount, recipient_code, reason }: { amount: number; recipient_code: string; reason?: string; }) => {
+  try {
+    const response = await paymentApi.post('/transfer', {
+      source: 'balance',
+      amount: amount*100, // in kobo (e.g. ₦500 => 50000)
+      recipient: recipient_code,
+      reason,
+    });
 
-    //   const totalPending = wResult.length > 0 ? wResult[0].totalSum : 0;
+    return response.data.data;
+  } catch(err: any) {
+    console.error('Paystack initiateTransfer error:', err.response?.data || err.message);
+    throw new ApiError(400, err.response?.data?.message || 'Paystack transfer error');
+  }
+};
 
-    //   const charge = await SettingService.commissionAmount(amount);
-    //   if (user.wallet - totalPending < amount + charge) {
-    //     const required = amount + charge;
-    //     throw new ApiError(StatusCodes.BAD_REQUEST, `Insufficient balance. Available: ${user.wallet} - ${totalPending} (pending withdraw), required: ${required} (${amount} + ${charge} charge)`);
-    //   }
-
-    //   // Ensure user has a Stripe account (sid)
-    //   if (!user.sid) {
-    //     const account = await payment.accounts.create({ type: 'express', email: user.email });
-    //     user.sid = account.id;
-    //     await user.save({ session });
-    //   }
-
-    //   const accountInfo = await payment.accounts.retrieve(user.sid);
-    //   if (!accountInfo.capabilities || accountInfo.capabilities.transfers !== 'active') {
-    //     const accountLink = await payment.accountLinks.create({
-    //       account: user.sid,
-    //       refresh_url,
-    //       return_url,
-    //       type: 'account_onboarding',
-    //     });
-    //     await session.abortTransaction();
-    //     session.endSession();
-    //     return { url: accountLink.url, refresh_url, success_url: return_url };
-    //   }
-
-    //   // Deduct the amount + charge from user's wallet atomically
-    //   user.wallet -= (amount + charge);
-    //   await user.save({ session });
-
-    //   // store the withdrawal
-    //   const withdraw = await Withdraw.create([{ userId, amount, charge }], { session });
-    //   if (!withdraw || !withdraw[0]) {
-    //     throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create withdrawal request.');
-    //   }
-
-    //   await session.commitTransaction();
-    //   session.endSession();
-
-    //   return withdraw[0];
-    // } catch (error) {
-    //   await session.abortTransaction();
-    //   session.endSession();
-    //   throw error;
-    // }
-  };
 
   withdrawAdminRes = async (withDrawId: string, status: IWithdrawStatus) => {
     // if (!withDrawId) {
