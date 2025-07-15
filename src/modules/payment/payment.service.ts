@@ -376,8 +376,8 @@ initiateTransfer = async ({ amount, recipient_code, reason }: { amount: number; 
     //   Promise.all([
     //     withDraw.save(),
     //     // update the admin balance
-    //     BalanceService.addChargeBalance(withDraw.charge),
-    //     BalanceService.addAppBalance(-(withDraw.amount + withDraw.charge)),
+    //     BalanceService.updateChargeBalance(withDraw.charge),
+    //     BalanceService.updateAppBalance(-(withDraw.amount + withDraw.charge)),
     //     user.save(),
     //     // send notification to user
     //     NotificationService.addNotification({

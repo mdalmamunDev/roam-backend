@@ -17,7 +17,7 @@ import { IPaymentStatus } from "./payment.interface";
 import Withdraw from "./withdraw/withdraw.model";
 import { Types } from "mongoose";
 import { SettingService } from "../settings/settings.service";
-import IWithdraw from "./withdraw/withdraw.interface";
+import IWithdraw, { IWithdrawStatus } from "./withdraw/withdraw.interface";
 
 
 class Controller {
@@ -48,20 +48,20 @@ class Controller {
     console.log('✅ Parsed event:', event);
 
     const { reference, amount, metadata } = event.data;
+    console.log('📦 Reference:', reference);
+    console.log('💵 Amount:', amount);
+    console.log('📄 Metadata:', metadata);
     // Step 6: Handle different event types
     switch (event.event) {
       case 'charge.success': {
         console.log('💰 charge.success event triggered');
-        console.log('📦 Reference:', reference);
-        console.log('💵 Amount:', amount);
-        console.log('📄 Metadata:', metadata);
         
         const payment = await Payment.findByIdAndUpdate(metadata?.pid, {status: 'success', trId: event.data?.id});
         if (payment) {
           await Promise.all([
             User.findByIdAndUpdate(payment.userId, { $inc: { wallet: payment.amount } }),
-            NotificationService.addNotification({ receiverId: payment.userId?.toString(), title: 'Add balance', message: `You have added ${payment.amount}$ successfully.` }),
-            BalanceService.addAppBalance(payment.amount),
+            NotificationService.addNotification({ receiverId: payment.userId?.toString(), title: 'Add balance', message: `You have added ${payment.amount} successfully.` }),
+            BalanceService.updateAppBalance(payment.amount),
           ]);
         }
         break;
@@ -69,19 +69,35 @@ class Controller {
       case 'charge.failed': {
         const payment = await Payment.findByIdAndUpdate(metadata?.pid, {status: 'failed' as IPaymentStatus});
         if (payment) {
-          await NotificationService.addNotification({ receiverId: payment.userId.toString(), title: 'Add balance', message: `Your payment ${payment.amount}$ was incomplete.` })
+          await NotificationService.addNotification({ receiverId: payment.userId.toString(), title: 'Add balance', message: `Your payment ${payment.amount} was incomplete.` })
         }
 
         break;
       }
-      case 'transfer.success':
+      case 'transfer.success': {
         console.log('✅ Transfer success:', event.data.reference);
+        const withdraw = await Withdraw.findOneAndUpdate({trId: event.data?.transfer_code}, {status: 'success' as IWithdrawStatus});
+        if (withdraw) {
+          await Promise.all([
+            NotificationService.addNotification({ receiverId: withdraw.userId?.toString(), title: 'Withdraw', message: `Your amount ${withdraw.amount} added on your bank account successfully.` }),
+            BalanceService.updateAppBalance(-withdraw.amount),
+            BalanceService.updateChargeBalance(withdraw.charge),
+          ]);
+        }
         break;
+      }
+      case 'transfer.failed': {
+        console.log('✅ Transfer failed:', event.data.reference);
+        const withdraw = await Withdraw.findOneAndUpdate({trId: event.data?.transfer_code}, {status: 'failed' as IWithdrawStatus});
+        if (withdraw) {
+          await Promise.all([
+            User.findByIdAndUpdate(withdraw.userId, { $inc: { wallet: withdraw.amount+withdraw.charge } }),
+            NotificationService.addNotification({ receiverId: withdraw.userId?.toString(), title: 'Withdraw', message: `Your withdraw ${withdraw.amount} was incomplete.` }),
+          ]);
+        }
 
-      case 'transfer.failed':
-        console.log('❌ Transfer failed:', event.data.reference);
         break;
-
+      }
       default:
         console.log('ℹ️ Unhandled event:', event.event);
     }
@@ -164,7 +180,7 @@ class Controller {
       
       await session.commitTransaction();
       session.endSession();
-      sendResponse(res, {code: StatusCodes.CREATED, message: 'Your withdrawal request has been recorded'})
+      sendResponse(res, {code: StatusCodes.CREATED, message: 'Your withdrawal request has been recorded', data: {withdraw: withdraw[0], transfer, recipient_code}})
     } catch (error) {
       await session.abortTransaction();
       session.endSession();
@@ -318,7 +334,7 @@ class Controller {
     await Promise.all([
       User.findByIdAndUpdate(transaction.userId, { $inc: { wallet: -transaction.finalAmount } }),
       Job.findByIdAndUpdate(transaction.jobId, {status: 'paid' as IJobStatus}),
-      BalanceService.addChargeBalance(transaction.charge - transaction.discount)
+      BalanceService.updateChargeBalance(transaction.charge - transaction.discount)
     ]);
 
     sendResponse(res, { code: StatusCodes.OK, message: "Send to provider successful." });

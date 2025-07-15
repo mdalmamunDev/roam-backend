@@ -12,7 +12,7 @@ class Service {
     const balance = await Balance.findOne({ key: 'app-balance' as IBalanceKey });
     return balance?.value || 0;
   }
-  addChargeBalance = async (amount: number): Promise<number> => {
+  updateChargeBalance = async (amount: number): Promise<number> => {
     // Use findOneAndUpdate with upsert to handle both find and create in one operation
     const balance = await Balance.findOneAndUpdate(
       { key: 'charge-balance' as IBalanceKey },  // Search by key
@@ -27,7 +27,7 @@ class Service {
     return balance.value;  // Return charge if greater than 1, else return 0
   };
 
-  addAppBalance = async (amount: number): Promise<number> => {
+  updateAppBalance = async (amount: number): Promise<number> => {
     // Use findOneAndUpdate with upsert to handle both find and create in one operation
     const balance = await Balance.findOneAndUpdate(
       { key: 'app-balance' as IBalanceKey },  // Search by key

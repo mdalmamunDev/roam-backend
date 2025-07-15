@@ -149,8 +149,8 @@ const adminSeeder = async () => {
 }
 
 const balanceSeeder = async () => {
-    BalanceService.addAppBalance(0);
-    BalanceService.addChargeBalance(0);
+    BalanceService.updateAppBalance(0);
+    BalanceService.updateChargeBalance(0);
 }
 
 // Main function to seed the database

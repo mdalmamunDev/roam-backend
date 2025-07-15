@@ -15,8 +15,8 @@ const get = catchAsync(async (req: Request, res: Response) => {
   // Ensure there are at least 2 balance entries, create them if missing
   if (balance.length < 2) {
     await Promise.all([
-      BalanceService.addAppBalance(0),
-      BalanceService.addChargeBalance(0),
+      BalanceService.updateAppBalance(0),
+      BalanceService.updateChargeBalance(0),
     ]);
     balance = await Balance.find();
   }
