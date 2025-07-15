@@ -166,21 +166,17 @@ class Controller {
       if (user.wallet - totalPending < amount + charge) 
         throw new ApiError(StatusCodes.BAD_REQUEST, `Insufficient balance. Available: ${user.wallet} - ${totalPending} (pending withdraw), required: ${amount + charge} (${amount} + ${charge} charge)`);
 
-      // transfer balance
-      const recipient_code = await PaymentService.createTransferRecipient({ name, account_number, bank_code });
-      const transfer = await PaymentService.initiateTransfer({ amount, recipient_code, reason });
-
       // Deduct the amount + charge from user's wallet atomically
       user.wallet -= (amount + charge);
       await user.save({ session });
 
       // store the withdrawal
-      const withdraw = await Withdraw.create([{ userId, amount, charge, trId: transfer?.id } as IWithdraw], { session });
+      const withdraw = await Withdraw.create([{ userId, amount, charge, account_number, bank_code, reason } as IWithdraw], { session });
       if (!withdraw || !withdraw[0]) throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create withdrawal request.');
       
       await session.commitTransaction();
       session.endSession();
-      sendResponse(res, {code: StatusCodes.CREATED, message: 'Your withdrawal request has been recorded', data: {withdraw: withdraw[0], transfer, recipient_code}})
+      sendResponse(res, {code: StatusCodes.CREATED, message: 'Your withdrawal request has been recorded', data: {withdraw: withdraw[0]}})
     } catch (error) {
       await session.abortTransaction();
       session.endSession();
@@ -192,7 +188,20 @@ class Controller {
   withdrawRes = catchAsync(async (req, res) => {
     const { withDrawId } = req.params
     const { status } = req.body;
-    await PaymentService.withdrawAdminRes(withDrawId, status)
+    const withdraw = await Withdraw.findById(withDrawId).populate('userId');
+    if(!withdraw) throw new ApiError(StatusCodes.NOT_FOUND, 'Withdraw not found');
+
+    if(status === 'accepted' as IWithdrawStatus) {
+      const { account_number, bank_code, amount, charge, reason } = withdraw;
+      // transfer balance
+      const recipient_code = await PaymentService.createTransferRecipient({ name: withdraw.userId?.name , account_number, bank_code });
+      const transfer = await PaymentService.initiateTransfer({ amount, recipient_code, reason });
+
+      withdraw.trId = transfer?.transfer_code;
+    }
+    
+    withdraw.status = status;
+    await withdraw.save();
     sendResponse(res, { code: StatusCodes.OK, message: `Withdraw successfully ${status} !` });
   })
 

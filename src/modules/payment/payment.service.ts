@@ -32,10 +32,10 @@ class Service {
     const [transactions, payments, withdraws] = await Promise.all([
       Transaction.find({
         createdAt: { $gte: thirtyDaysAgo },
-        $or: [{ customerId: userId }, { providerId: userId }],
+        $or: [{ userId: userId }, { providerId: userId }],
       })
         .populate('providerId', 'name profileImage')
-        .populate('customerId', 'name profileImage')
+        .populate('userId', 'name profileImage')
         .lean(),
 
       Payment.find({
@@ -53,8 +53,8 @@ class Service {
 
     // Push formatted transactions
     transactions.forEach((item: any) => {
-      const isSender = item.customerId?._id?.toString() === userIdStr;
-      const receiver = isSender ? item.providerId : item.customerId;
+      const isSender = item.userId?._id?.toString() === userIdStr;
+      const receiver = isSender ? item.providerId : item.userId;
 
       result.push({
         trId: item._id,
@@ -81,7 +81,7 @@ class Service {
     // Push formatted withdraws
     withdraws.forEach((item: any) => {
       result.push({
-        trId: item._id,
+        trId: item.trId,
         createdAt: item.createdAt,
         amount: -1 * item.amount,
         title: 'Withdraw Balance',
@@ -327,69 +327,6 @@ initiateTransfer = async ({ amount, recipient_code, reason }: { amount: number; 
   }
 };
 
-
-  withdrawAdminRes = async (withDrawId: string, status: IWithdrawStatus) => {
-    // if (!withDrawId) {
-    //   throw new ApiError(StatusCodes.BAD_REQUEST, "Invalid withdrawal request ID.");
-    // }
-    // const withDraw = await Withdraw.findById(withDrawId);
-    // if (!withDraw || withDraw.status === 'success') {
-    //   throw new ApiError(StatusCodes.NOT_FOUND, "No withdraw request found or already withdraw success.");
-    // }
-
-    // // handle cancel
-    // if (status === 'canceled') {
-    //   withDraw.status = status;
-    //   await withDraw.save();
-    //   return withDraw;
-    // }
-
-    // const user = await User.findById(withDraw.userId);
-    // if (!user) {
-    //   throw new ApiError(StatusCodes.NOT_FOUND, "User not found.");
-    // }
-
-    // let accountInfo;
-    // try {
-    //   accountInfo = await payment.accounts.retrieve(user.sid);
-    // } catch (error) {
-    //   throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, "Failed to retrieve account information.");
-    // }
-    // if (!accountInfo.capabilities || accountInfo.capabilities.transfers !== 'active') {
-    //   throw new ApiError(StatusCodes.PAYMENT_REQUIRED, "Get bank information from user first.");
-    // }
-
-    // let transfer = await payment.transfers.create({
-    //   amount: withDraw.amount,
-    //   currency: 'usd',
-    //   destination: user.sid,
-    //   description: 'Payment transfer for withdraw.',
-    // });
-    // if (!transfer) {
-    //   throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, "Payment transfer failed.");
-    // }
-
-    // if (transfer.balance_transaction) {
-    //   withDraw.status = 'success';
-    //   // cut the amount from user's wallet
-    //   user.wallet -= withDraw.amount + withDraw.charge,
-    //   Promise.all([
-    //     withDraw.save(),
-    //     // update the admin balance
-    //     BalanceService.updateChargeBalance(withDraw.charge),
-    //     BalanceService.updateAppBalance(-(withDraw.amount + withDraw.charge)),
-    //     user.save(),
-    //     // send notification to user
-    //     NotificationService.addNotification({
-    //       receiverId: withDraw.userId?.toString(),
-    //       title: 'Withdraw success!',
-    //       message: `Your withdrawal amount ${withDraw.amount} added to your account`
-    //     }),
-    //   ]);
-
-    // }
-    // return withDraw;
-  }
 
 
   getEarningsDataForMonth = async (month: number, year: number) => {

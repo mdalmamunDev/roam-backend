@@ -3,7 +3,6 @@ import { PaymentStatus } from './payment.interface';
 import { WithdrawStatus } from './withdraw/withdraw.interface';
 
 // Validation for the payment object
-const sessionId = z.string().min(1, 'Payment session is required.');
 
 // const customerId = objectId;
 
@@ -26,7 +25,6 @@ const status = z.enum(PaymentStatus as [string, ...string[]], {
 }).optional();
 
 const PaymentValidation = {
-  sessionId,
   amount,
   status,
 };

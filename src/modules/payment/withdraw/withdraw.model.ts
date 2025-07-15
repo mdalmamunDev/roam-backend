@@ -12,6 +12,17 @@ const schema = new Schema<IWithdraw>(
       type: String,
       unique: true,
     },
+    account_number: {
+      type: String,
+      required: true,
+    },
+    bank_code: {
+      type: String,
+      required: true,
+    },
+    reason: {
+      type: String,
+    },
     amount: {
       type: Number,
       required: [true, 'Amount is required.'],
