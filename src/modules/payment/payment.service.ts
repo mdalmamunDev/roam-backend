@@ -160,12 +160,12 @@ class Service {
       filters.isRefundRequested = isRefundRequested === 'true';
     }
 
-    // Handle keyword search for customerId or providerId (by ObjectId or name)
+    // Handle keyword search for userId or providerId (by ObjectId or name)
     if (keyword) {
       filters.$or = [
-        // Check if the keyword is a valid ObjectId and filter by customerId or providerId
+        // Check if the keyword is a valid ObjectId and filter by userId or providerId
         ...(Types.ObjectId.isValid(keyword as string) ? [
-          { customerId: keyword },
+          { userId: keyword },
           { providerId: keyword },
         ] : []),
         // At this point, we filter by name after populate, not directly in the query
@@ -181,7 +181,7 @@ class Service {
       sortOrder: sortOrder as string,
       model: Transaction,
       populate: [
-        { path: 'customerId', select: 'name email phone' },
+        { path: 'userId', select: 'name email phone' },
         { path: 'providerId', select: 'name email phone' },
       ]
     });

@@ -110,7 +110,7 @@ class Controller {
 
     await TowTruck.findOneAndUpdate({ userId }, { isVerified });
 
-    sendResponse(res, { code: StatusCodes.OK });
+    sendResponse(res, { code: StatusCodes.OK, message: `Provider has been ${isVerified ? 'verified' : 'unverified'} successfully.` });
   });
 
   getNid = catchAsync(async (req, res) => {
