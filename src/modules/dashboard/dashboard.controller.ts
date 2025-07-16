@@ -5,22 +5,25 @@ import { UserService } from '../user/user.service';
 import { PaymentService } from '../payment/payment.service';
 import { BalanceService } from '../balance/balance.service';
 import { SettingService } from '../settings/settings.service';
+import { PromoService } from '../promo/promo.service';
 
 // get all Tools
 class Controller {
   getDashboard = catchAsync(async (req, res) => {
     const { recentLimit = '20', year, month } = req.query;
 
-    const [totalUsers, recentUsers, chargeBalance, totalWithdrawal, appBalance, earningChart] = await Promise.all([
-      UserService.getTotalUsers(),
+    const [totalUsers, totalProvider, recentUsers, chargeBalance, totalWithdrawal, appBalance, earningChart, recentPromos] = await Promise.all([
+      UserService.getTotalUsers('user'),
+      UserService.getTotalUsers('provider'),
       UserService.getRecentUsers(parseInt(recentLimit as string, 10)),
       BalanceService.getChargeBalance(),
       PaymentService.getTotalWithdrawal(),
       BalanceService.getAppBalance(),
-      PaymentService.getEarningsDataForMonth(Number(month), Number(year)),
+      PaymentService.getEarningsDataForYear(Number(year)),
+      PromoService.getRecentPromos(parseInt(recentLimit as string, 10)),
     ]);
 
-    sendResponse(res, { code: StatusCodes.OK, data: { totalUsers, recentUsers, chargeBalance, totalWithdrawal, appBalance, earningChart } });
+    sendResponse(res, { code: StatusCodes.OK, data: { totalUsers, totalProvider, recentUsers, recentPromos, chargeBalance, totalWithdrawal, appBalance, earningChart} });
   });
 
   getEarnings = catchAsync(async (req, res) => {

@@ -24,6 +24,7 @@ const carRegistrationBack = z.string().min(1, 'Invalid back car registration ima
 const driverImage = z.string().min(1, 'Invalid driver image URL');
 const carImage = z.string().min(1, 'Invalid car image URL');
 const isOnline = z.boolean();
+const isVerified = z.boolean();
 
 // 🧩 Base object
 const TowTruckValidation = {
@@ -112,6 +113,12 @@ class Valid {
   goOnline = z.object({
     body: z.object({
       isOnline,
+    }).strict(), // Ensures no additional properties are allowed
+  });
+
+  updateIsVerified = z.object({
+    body: z.object({
+      isVerified,
     }).strict(), // Ensures no additional properties are allowed
   });
 }

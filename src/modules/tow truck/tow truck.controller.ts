@@ -12,7 +12,7 @@ import paginate from '../../helpers/paginationHelper';
 class Controller {
   private async getTowTruckOrThrow(userId: string, fields: string) {
     const towTruck = await TowTruck.findOne({ userId }).select(fields).lean();
-    if (!towTruck) throw new ApiError(StatusCodes.NOT_FOUND, 'Tow truck not found');
+    if (!towTruck) throw new ApiError(StatusCodes.NOT_FOUND, 'Driver not found');
     return towTruck;
   }
 
@@ -78,7 +78,7 @@ class Controller {
       .filter(Boolean)
       .sort((a: any, b: any) => a.distance - b.distance);
 
-    sendResponse(res, { code: StatusCodes.OK, message: 'Tow truck profile fetched successfully', data: {providers: sortedProviders, pagination} });
+    sendResponse(res, { code: StatusCodes.OK, data: {providers: sortedProviders, pagination} });
   });
 
 
@@ -90,31 +90,51 @@ class Controller {
       this.getTowTruckOrThrow(userId, '-userId -nidNo -nidFront -nidBack -drivingLicenseNo -drivingLicenseFront -drivingLicenseBack -carRegistrationNo -carRegistrationFont -carRegistrationBack')
     ]);
 
-    sendResponse(res, { code: StatusCodes.OK, message: 'Tow truck profile fetched successfully', data: { ...user, ...towTruck } });
+    sendResponse(res, { code: StatusCodes.OK, data: { ...user, ...towTruck } });
+  });
+
+  getProvider = catchAsync(async (req, res) => {
+    const { userId } = req.params;
+
+    const [user, towTruck] = await Promise.all([
+      UserService.getSingleUser(userId),
+      this.getTowTruckOrThrow(userId, '-userId')
+    ]);
+
+    sendResponse(res, { code: StatusCodes.OK, data: { ...user, ...towTruck } });
+  });
+
+  verifyProvider = catchAsync(async (req, res) => {
+    const { userId } = req.params;
+    const { isVerified } = req.body;
+
+    await TowTruck.findOneAndUpdate({ userId }, { isVerified });
+
+    sendResponse(res, { code: StatusCodes.OK });
   });
 
   getNid = catchAsync(async (req, res) => {
     const { userId } = req.user;
     const towTruck = await this.getTowTruckOrThrow(userId, 'nidNo nidFront nidBack -_id');
-    sendResponse(res, { code: StatusCodes.OK, message: 'Tow truck NID info fetched successfully', data: towTruck });
+    sendResponse(res, { code: StatusCodes.OK, message: 'Driver NID info fetched successfully', data: towTruck });
   });
 
   getLicense = catchAsync(async (req, res) => {
     const { userId } = req.user;
     const towTruck = await this.getTowTruckOrThrow(userId, 'drivingLicenseNo drivingLicenseFront drivingLicenseBack -_id');
-    sendResponse(res, { code: StatusCodes.OK, message: 'Tow truck license info fetched successfully', data: towTruck });
+    sendResponse(res, { code: StatusCodes.OK, message: 'Driver license info fetched successfully', data: towTruck });
   });
 
   getReg = catchAsync(async (req, res) => {
     const { userId } = req.user;
     const towTruck = await this.getTowTruckOrThrow(userId, 'carRegistrationNo carRegistrationFront carRegistrationBack -_id');
-    sendResponse(res, { code: StatusCodes.OK, message: 'Tow truck car registration fetched successfully', data: towTruck });
+    sendResponse(res, { code: StatusCodes.OK, message: 'Driver car registration fetched successfully', data: towTruck });
   });
 
   getCarDriverImages = catchAsync(async (req, res) => {
     const { userId } = req.user;
     const towTruck = await this.getTowTruckOrThrow(userId, 'carImage driverImage -_id');
-    sendResponse(res, { code: StatusCodes.OK, message: 'Tow truck car image & driver image fetched successfully', data: towTruck });
+    sendResponse(res, { code: StatusCodes.OK, message: 'Driver car image & driver image fetched successfully', data: towTruck });
   });
 
   completeProfile = catchAsync(async (req, res) => {
@@ -132,7 +152,7 @@ class Controller {
 
     if (!user || !towTruck) return sendResponse(res, { code: StatusCodes.BAD_REQUEST, message: 'Failed to complete profile update' });
 
-    sendResponse(res, { code: StatusCodes.CREATED, message: 'Tow Truck basic info stored successfully' });
+    sendResponse(res, { code: StatusCodes.CREATED, message: 'Driver basic info stored successfully' });
   });
 
   update = catchAsync(async (req, res) => {
@@ -142,7 +162,7 @@ class Controller {
 
     if (!towTruck) return sendResponse(res, { code: StatusCodes.BAD_REQUEST, message: 'Failed to update tow truck data' });
 
-    sendResponse(res, { code: StatusCodes.CREATED, message: 'Tow Truck updated successfully' });
+    sendResponse(res, { code: StatusCodes.CREATED, message: 'Driver updated successfully' });
   });
 
   updateProfile = catchAsync(async (req, res) => {
@@ -160,7 +180,7 @@ class Controller {
 
     if (!user || !towTruck) return sendResponse(res, { code: StatusCodes.BAD_REQUEST, message: 'Failed to update tow truck profile' });
 
-    sendResponse(res, { code: StatusCodes.CREATED, message: 'Tow Truck updated successfully' });
+    sendResponse(res, { code: StatusCodes.CREATED, message: 'Driver updated successfully' });
   });
 }
 

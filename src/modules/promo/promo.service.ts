@@ -3,6 +3,7 @@ import ApiError from '../../errors/ApiError';
 import { ObjectId } from 'mongoose';
 import IPromo from './promo.interface';
 import Promo from './promo.model';
+import moment from 'moment';
 
 class Service {
   getValidPromosByUser = async (userId: ObjectId | string): Promise<IPromo[]> => {
@@ -34,6 +35,18 @@ class Service {
     if(!promo) throw new ApiError(StatusCodes.NOT_FOUND, 'Promo code not valid');
 
     return promo.type === 'percent' ? orderAmount * (promo.value / 100) : promo.value;
+  };
+
+  getRecentPromos = async (limit: number) => {
+    const promos = await Promo.find({ status: 'active' })
+      .sort({ createdAt: -1 })
+      .limit(limit)
+  
+    const updatedPromos = promos.map((user: any) => ({
+      ...user.toObject(),
+      ago: moment(user.createdAt).fromNow(),
+    }));
+    return updatedPromos;
   };
 }
 

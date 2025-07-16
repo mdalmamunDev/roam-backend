@@ -7,6 +7,7 @@ import { User } from './user.model';
 import paginate from '../../helpers/paginationHelper';
 import { Role, UserRole } from './user.constant';
 import { Types } from 'mongoose';
+import TowTruck from '../tow truck/tow truck.model';
 
 const createAdminOrSuperAdmin = catchAsync(async (req, res) => {
   const payload = req.body;
@@ -107,7 +108,6 @@ const getAllUsers = catchAsync(async (req, res) => {
   }
 
   // Handle the keyword filter (user.name or user._id)
-  console.log(keyword);
   if (keyword) {
     const keywordFilter: any = {
       $or: [
@@ -122,15 +122,26 @@ const getAllUsers = catchAsync(async (req, res) => {
   // keyword can user.name or user._id write the filter logic for keyword
 
   // Call the paginate function with required parameters
-  const { results, pagination } = await paginate({
+  let { results, pagination } = await paginate({
     page: parseInt(page as string),
     limit: parseInt(limit as string),
     filters,
     sortField: sortField as string,
     sortOrder: sortOrder as string,
     model: User,
-    select: 'name email address phone role profileImage createdAt status'
+    select: 'name email address phone dateOfBirth role profileImage createdAt status'
   });
+
+  // join to TowTruck where towTruck.userId == User._id and get isVerified
+  if (role === 'provider') {
+    results = await Promise.all(results.map(async (user: any) => {
+      const towTruck = await TowTruck.findOne({ userId: user._id }, 'isVerified');
+      return {
+        ...user.toObject(),
+        isVerified: towTruck?.isVerified ?? false
+      };
+    }));
+  }
 
   // Send the response with the results and pagination info
   return sendResponse(res, {

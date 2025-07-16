@@ -53,4 +53,8 @@ router.put('/profile',
     TowTruckController.updateProfile
 );
 
+
+router.get('/:userId', auth('admin'), TowTruckController.getProvider);
+router.put('/verify/:userId', auth('admin'), validateRequest(ValidTT.updateIsVerified), TowTruckController.verifyProvider);
+
 export const TowTruckRoutes = router;

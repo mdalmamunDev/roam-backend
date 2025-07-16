@@ -365,6 +365,55 @@ initiateTransfer = async ({ amount, recipient_code, reason }: { amount: number; 
     return result;  // Array of { day: number, earnings: number }
   };
 
+  getEarningsDataForYear = async (year: number) => {
+    if (!year || year < 1) {
+      throw new ApiError(StatusCodes.BAD_REQUEST, 'Invalid year provided.');
+    }
+
+    const startDate = new Date(year, 0, 1); // Jan 1st
+    const endDate = new Date(year + 1, 0, 1); // Jan 1st next year (exclusive upper bound)
+
+    const result = await Transaction.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: startDate, $lt: endDate },
+          status: 'received' as ITransactionStatus,
+        },
+      },
+      {
+        $group: {
+          _id: { $month: '$createdAt' }, // Group by month (1-12)
+          totalAmount: { $sum: '$charge' },
+        },
+      },
+      {
+        $project: {
+          month: '$_id',
+          earnings: '$totalAmount',
+          _id: 0,
+        },
+      },
+      {
+        $sort: { month: 1 },
+      },
+    ]);
+
+    // Fill missing months with 0 earnings
+    const earningsByMonth: { month: string; earnings: number }[] = [];
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    for (let i = 1; i <= 12; i++) {
+      const monthData = result.find((m) => m.month === i);
+      earningsByMonth.push({
+        month: monthNames[i - 1],
+        earnings: monthData ? monthData.earnings : 0,
+      });
+    }
+
+    return earningsByMonth; // [{ month: 'Jan', earnings: 123 }, ...]
+  };
+
+
   transferBalance = async (payload: Partial<ITransaction>): Promise<ITransaction> => {
     if (!payload.amount || payload.amount < 0) {
       throw new ApiError(StatusCodes.BAD_REQUEST, 'Amount cannot be negative.');

@@ -4,7 +4,7 @@ import { PaginateOptions, PaginateResult } from '../../types/paginate';
 import { TUser } from './user.interface';
 import { User } from './user.model';
 import { sendAdminOrSuperAdminCreationEmail } from '../../helpers/emailService';
-import { TUserStatus } from './user.constant';
+import { Role, TUserStatus } from './user.constant';
 import { ObjectId, Types } from 'mongoose';
 import colors from 'colors';
 import { logger } from '../../shared/logger';
@@ -243,8 +243,8 @@ const updateUserLocation = async (data: { userId: string, lng: number; lat: numb
 };
 
 
-const getTotalUsers = async () => {
-  const total = await User.countDocuments({ isDeleted: false, status: 'active' as TUserStatus })
+const getTotalUsers = async (role: Role) => {
+  const total = await User.countDocuments({ isDeleted: false, status: 'active' as TUserStatus, role })
   return total;
 }
 
