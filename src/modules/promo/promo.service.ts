@@ -37,17 +37,20 @@ class Service {
     return promo.type === 'percent' ? orderAmount * (promo.value / 100) : promo.value;
   };
 
-  getRecentPromos = async (limit: number) => {
-    const promos = await Promo.find({ status: 'active' })
-      .sort({ createdAt: -1 })
-      .limit(limit)
-  
-    const updatedPromos = promos.map((user: any) => ({
-      ...user.toObject(),
-      ago: moment(user.createdAt).fromNow(),
-    }));
-    return updatedPromos;
-  };
+ getRecentPromos = async (limit: number) => {
+  const promos = await Promo.find({ status: 'active' })
+    .sort({ createdAt: -1 })
+    .limit(limit);
+
+  const updatedPromos = promos.map((promo: any) => ({
+    ...promo.toObject(),
+    usageCount: promo.users?.length || 0,
+    ago: moment(promo.createdAt).fromNow(),
+    users: undefined,
+  }));
+
+  return updatedPromos;
+};
 }
 
 export const PromoService = new Service();
