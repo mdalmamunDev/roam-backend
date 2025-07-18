@@ -98,8 +98,10 @@ class Controller {
 
     const [user, towTruck] = await Promise.all([
       UserService.getSingleUser(userId),
-      this.getTowTruckOrThrow(userId, '-userId')
+      TowTruck.findOne({ userId }).select('-userId').populate('towTypeId').lean()
     ]);
+
+    if (!towTruck) throw new ApiError(StatusCodes.NOT_FOUND, 'Driver not found');
 
     sendResponse(res, { code: StatusCodes.OK, data: { ...user, ...towTruck } });
   });

@@ -113,6 +113,7 @@ const getAllUsers = catchAsync(async (req, res) => {
       $or: [
         { name: { $regex: keyword, $options: 'i' } },  // Case-insensitive search for name
         { email: keyword },
+        { phone: keyword },
         { _id: Types.ObjectId.isValid(keyword as string) ? new Types.ObjectId(keyword as string) : null }, // Search by _id if valid
       ],
     };
